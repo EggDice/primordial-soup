@@ -5,11 +5,17 @@
 - OpenGL
 - GLUT
 - GLM
-- `make`
+- bazel
 
 ## Build & Run
 
 ```sh
-make
-./soup
+bazel build ...
+bazel run //main:soup
+```
+
+## Test
+
+```sh
+bazel test ...
 ```

@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <cstdlib>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #include <GLUT/glut.h>
@@ -16,31 +19,18 @@ int ROTATION_STEP = 5;
 float _angleX = 0;
 float _angleY = 0;
 
-struct Color {
-  float r, g, b;
-};
-
 struct Cube {
-  float x, y, z;
-  Color color;
-  Cube() {
-    x = 0;
-    y = 0;
-    z = 0;
-    color = {1.0f, 1.0f, 1.0f};
-  }
-  Cube(float _x, float _y, float _z, Color _color) : x(_x), y(_y), z(_z), color(_color) {}
+  glm::vec3 position;
+  glm::vec3 color;
 };
 
 class Element {
   public:
-    int position[3];
-    int velocity[3];
+    glm::ivec3 position;
+    glm::ivec3 velocity;
 
-    void renderToCube(Cube & cube) {
-      cube.x = (float) position[0];
-      cube.y = (float) position[1];
-      cube.z = (float) position[2];
+    Cube renderToCube() {
+      return {position, {1.0f, 1.0f, 1.0f}};
     }
 
     void move() {
@@ -53,20 +43,15 @@ class Element {
       if (std::abs(position[2] + velocity[2]) > WORLD_RADIUS) {
         velocity[2] *= -1;
       }
-      position[0] += velocity[0];
-      position[1] += velocity[1];
-      position[2] += velocity[2];
+      position += velocity;
     }
 };
-
 
 void renderCube(Cube cube);
 void renderWorld();
 
-
 Element movingElement = {{1, 1, 1}, {2, 3, 1}};
-
-Cube movingCube = {0, 0, 0, {1.0f, 0.0f, 0.0f}};
+Cube movingCube = {{0, 0, 0}, {1.0f, 0.0f, 0.0f}};
 
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
@@ -128,11 +113,11 @@ void drawScene() {
 	glRotatef(-_angleY, 0.0f, 1.0f, 0.0f);
 
   std::vector<Cube> cubes = {
-    {0.0f, 0.0f, 0.0f, {1.0f, 1.0f, 0.0f}},
-    {2.0f, 2.0f, -2.0f, {0.0f, 1.0f, 0.0f}},
-    {0.0f, 2.0f, 0.0f, {0.0f, 1.0f, 1.0f}},
-    {0.0f, 0.0f, -2.0f, {0.0f, 0.0f, 1.0f}},
-    {2.0f, 0.0f, 0.0f, {1.0f, 0.0f, 1.0f}},
+    {{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},
+    {{2.0f, 2.0f, -2.0f}, {0.0f, 1.0f, 0.0f}},
+    {{0.0f, 2.0f, 0.0f}, {0.0f, 1.0f, 1.0f}},
+    {{0.0f, 0.0f, -2.0f}, {0.0f, 0.0f, 1.0f}},
+    {{2.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}},
   };
 
   for (auto &c : cubes) {
@@ -146,12 +131,12 @@ void drawScene() {
 
 void renderCube(Cube cube) {
 	glBegin(GL_QUADS);
-  float x = cube.x;
-  float y = cube.y;
-  float z = cube.z;
+  float x = cube.position[0];
+  float y = cube.position[1];
+  float z = cube.position[2];
 
 	//Top face
-	glColor3f(cube.color.r, cube.color.g, cube.color.b);
+	glColor3fv(glm::value_ptr(cube.color));
 	glNormal3f(0.0, 1.0f, 0.0f);
 	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
 	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
@@ -250,11 +235,10 @@ void renderWorld() {
 	glEnd();
 }
 
-//Called every 25 milliseconds
 void update(int value) {
 	glutPostRedisplay();
   movingElement.move();
-  movingElement.renderToCube(movingCube);
+  movingCube = movingElement.renderToCube();
 	glutTimerFunc(25, update, 0);
 }
 
