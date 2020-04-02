@@ -1,3 +1,7 @@
+load("//tools:cpplint.bzl", "cpplint")
+
+package(default_visibility = ["//visibility:public"])
+
 cc_library(
     name = "render_system",
     hdrs = glob(["*.h"]),
@@ -13,3 +17,9 @@ cc_library(
     linkopts = ["-lgtest -lpthread"],
     visibility = ["//main:__pkg__"],
 )
+
+exports_files([
+    "CPPLINT.cfg",
+])
+
+cpplint()
