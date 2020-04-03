@@ -13,45 +13,15 @@
 #include <GL/glut.h>
 #endif
 
-const float BOX_SIZE = 1.0f;
+#include "../render_system/cube.h"
+
+const float BOX_SIZE = 5.0f;
 const float WORLD_RADIUS = 20.0f;
 int ROTATION_STEP = 5;
 float _angleX = 0;
 float _angleY = 0;
 
-struct Cube {
-  glm::vec3 position;
-  glm::vec3 color;
-};
-
-class Element {
-  public:
-    glm::ivec3 position;
-    glm::ivec3 velocity;
-
-    Cube renderToCube() {
-      return {position, {1.0f, 1.0f, 1.0f}};
-    }
-
-    void move() {
-      if (std::abs(position[0] + velocity[0]) > WORLD_RADIUS) {
-        velocity[0] *= -1;
-      }
-      if (std::abs(position[1] + velocity[1]) > WORLD_RADIUS) {
-        velocity[1] *= -1;
-      }
-      if (std::abs(position[2] + velocity[2]) > WORLD_RADIUS) {
-        velocity[2] *= -1;
-      }
-      position += velocity;
-    }
-};
-
-void renderCube(Cube cube);
 void renderWorld();
-
-Element movingElement = {{1, 1, 1}, {2, 3, 1}};
-Cube movingCube = {{0, 0, 0}, {1.0f, 0.0f, 0.0f}};
 
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
@@ -112,73 +82,24 @@ void drawScene() {
   glRotatef(-_angleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(-_angleY, 0.0f, 1.0f, 0.0f);
 
-  std::vector<Cube> cubes = {
-    {{0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 0.0f}},
-    {{2.0f, 2.0f, -2.0f}, {0.0f, 1.0f, 0.0f}},
-    {{0.0f, 2.0f, 0.0f}, {0.0f, 1.0f, 1.0f}},
-    {{0.0f, 0.0f, -2.0f}, {0.0f, 0.0f, 1.0f}},
-    {{2.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 1.0f}},
-  };
+  soup::render_system::Cube cube({0.0f, 0.0f, 0.0f}, 5.0f, {1.0f, 1.0f, 0.0f});
 
-  for (auto &c : cubes) {
-    renderCube(c);
+  auto quads = cube.GetQuads();
+
+	glBegin(GL_QUADS);
+  for (auto & quad : quads) {
+    glColor3fv(glm::value_ptr(quad.color));
+    glNormal3fv(glm::value_ptr(quad.normal));
+	  glVertex3fv(glm::value_ptr(quad.vertices[0]));
+	  glVertex3fv(glm::value_ptr(quad.vertices[1]));
+	  glVertex3fv(glm::value_ptr(quad.vertices[2]));
+	  glVertex3fv(glm::value_ptr(quad.vertices[3]));
   }
-  renderCube(movingCube);
+  glEnd();
+
   renderWorld();
 
 	glutSwapBuffers();
-}
-
-void renderCube(Cube cube) {
-	glBegin(GL_QUADS);
-  float x = cube.position[0];
-  float y = cube.position[1];
-  float z = cube.position[2];
-
-	//Top face
-	glColor3fv(glm::value_ptr(cube.color));
-	glNormal3f(0.0, 1.0f, 0.0f);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-
-	//Bottom face
-	glNormal3f(0.0, -1.0f, 0.0f);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-
-	//Left face
-	glNormal3f(-1.0, 0.0f, 0.0f);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-
-	//Right face
-	glNormal3f(1.0, 0.0f, 0.0f);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-
-	//Front face
-	glNormal3f(0.0, 0.0f, 1.0f);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z + BOX_SIZE / 2);
-
-	//Back face
-	glNormal3f(0.0, 0.0f, -1.0f);
-	glVertex3f(x - BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x - BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y + BOX_SIZE / 2, z - BOX_SIZE / 2);
-	glVertex3f(x + BOX_SIZE / 2, y - BOX_SIZE / 2, z - BOX_SIZE / 2);
-
-	glEnd();
 }
 
 void renderWorld() {
@@ -213,8 +134,6 @@ void renderWorld() {
 
 void update(int value) {
 	glutPostRedisplay();
-  movingElement.move();
-  movingCube = movingElement.renderToCube();
 	glutTimerFunc(25, update, 0);
 }
 
