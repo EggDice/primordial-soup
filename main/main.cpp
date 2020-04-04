@@ -15,13 +15,11 @@
 
 #include "../render_system/cube.h"
 
-const float BOX_SIZE = 5.0f;
+const float BOX_RADIUS = 0.5f;
 const float WORLD_RADIUS = 20.0f;
 int ROTATION_STEP = 5;
 float _angleX = 0;
 float _angleY = 0;
-
-void renderWorld();
 
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
@@ -75,14 +73,15 @@ void drawScene() {
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
 
 	GLfloat lightColor[] = {0.7f, 0.7f, 0.7f, 1.0f};
-	GLfloat lightPos[] = {-2 * BOX_SIZE, BOX_SIZE, 4 * BOX_SIZE, 1.0f};
+	GLfloat lightPos[] = {-2 * WORLD_RADIUS, WORLD_RADIUS, 4 * WORLD_RADIUS, 1.0f};
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
   glRotatef(-_angleX, 1.0f, 0.0f, 0.0f);
 	glRotatef(-_angleY, 0.0f, 1.0f, 0.0f);
 
-  soup::render_system::Cube cube({0.0f, 0.0f, 0.0f}, 5.0f, {1.0f, 1.0f, 0.0f});
+  soup::render_system::Cube world({0.0f, 0.0f, 0.0f}, WORLD_RADIUS, {0.0f, 1.0f, 1.0f});
+  soup::render_system::Cube cube({0.0f, 0.0f, 0.0f}, BOX_RADIUS, {1.0f, 1.0f, 0.0f});
 
   auto quads = cube.GetQuads();
 
@@ -97,39 +96,15 @@ void drawScene() {
   }
   glEnd();
 
-  renderWorld();
+	glBegin(GL_LINES);
+	for (auto & line : world.GetLines()) {
+	  glColor3fv(glm::value_ptr(line.color));
+	  glVertex3fv(glm::value_ptr(line.vertices[0]));
+	  glVertex3fv(glm::value_ptr(line.vertices[1]));
+  }
+  glEnd();
 
 	glutSwapBuffers();
-}
-
-void renderWorld() {
-	glColor3f(0.0f, 1.0f, 1.0f);
-	glBegin(GL_LINES);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, WORLD_RADIUS);
-  glVertex3f(-WORLD_RADIUS, -WORLD_RADIUS, -WORLD_RADIUS);
-	glEnd();
 }
 
 void update(int value) {
