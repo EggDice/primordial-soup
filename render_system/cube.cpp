@@ -1,9 +1,5 @@
 #include "cube.h"
 
-#include <iostream>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/string_cast.hpp>
-
 #include <glm/gtc/matrix_access.hpp>
 
 namespace soup {

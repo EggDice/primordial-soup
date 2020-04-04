@@ -10,7 +10,7 @@ cc_binary(
 cc_test(
     name = "test",
     srcs = ["test-main.cpp"],
-    linkopts = ["-lgtest -lpthread"],
+    linkopts = ["-lgtest -lgmock -lpthread"],
     deps = [
         "//render_system:render_system",
         "//render_system:render_system_test",
