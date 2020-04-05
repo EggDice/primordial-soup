@@ -16,3 +16,9 @@ git_repository(
     remote = "https://github.com/skypjack/entt.git",
     tag = "v3.3.2",
 )
+
+git_repository(
+    name = "gtest",
+    remote = "https://github.com/google/googletest.git",
+    tag = "v1.10.x",
+)

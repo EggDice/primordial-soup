@@ -13,7 +13,9 @@ cc_library(
     name = "component_test",
     hdrs = glob(["*.h"]),
     srcs = glob(["*_test.cpp"]),
-    linkopts = ["-lgtest -lpthread"],
+    deps = [
+        "@gtest//:gtest",
+    ],
 )
 
 exports_files([

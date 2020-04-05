@@ -27,9 +27,9 @@ cc_library(
     name = "render_system_test",
     hdrs = glob(["*.h"]),
     srcs = glob(["*_test.cpp"]),
-    linkopts = ["-lgtest -lgmock -lpthread"],
     visibility = ["//main:__pkg__"],
     deps = [
+        "@gtest//:gtest",
         "@entt//:entt",
         "//component:component",
     ],
