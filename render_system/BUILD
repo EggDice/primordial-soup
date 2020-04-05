@@ -12,6 +12,7 @@ cc_library(
     linkopts = ["-lglut -lGL -lGLU"],
     visibility = ["//main:__pkg__"],
     deps = [
+        "@glm//:glm",
         "@entt//:entt",
         "//component:component",
     ],
@@ -30,6 +31,7 @@ cc_library(
     visibility = ["//main:__pkg__"],
     deps = [
         "@gtest//:gtest",
+        "@glm//:glm",
         "@entt//:entt",
         "//component:component",
     ],

@@ -4,7 +4,6 @@
 
 - OpenGL
 - GLUT
-- GLM
 - bazel
 
 ## Build & Run

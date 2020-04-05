@@ -2,6 +2,7 @@ workspace(name = "soup")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
+load("@bazel_tools//tools/build_defs/repo:git.bzl", "new_git_repository")
 
 http_archive(
     name = "google_styleguide",
@@ -21,4 +22,11 @@ git_repository(
     name = "gtest",
     remote = "https://github.com/google/googletest.git",
     tag = "v1.10.x",
+)
+
+new_git_repository(
+  name = "glm",
+  remote = "https://github.com/g-truc/glm.git",
+  tag = "0.9.9.7",
+  build_file = "glm.BUILD",
 )
