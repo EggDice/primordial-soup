@@ -1,0 +1,8 @@
+-Ibazel-primordial-soup/external/glm/
+-Ibazel-primordial-soup/external/glm/glm/
+-Ibazel-primordial-soup/external/gtest/googlemock/include/
+-Ibazel-primordial-soup/external/gtest/googlemock/src/
+-Ibazel-primordial-soup/external/entt/single_include/
+-Ibazel-primordial-soup/external/entt/src/
+-Ibazel-primordial-soup/external/gtest/googletest/include/
+-Ibazel-primordial-soup/external/gtest/googletest/src/
