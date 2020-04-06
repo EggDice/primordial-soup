@@ -17,23 +17,32 @@ void RenderSystem::Update(const entt::registry& registry, uint64_t delta_time) {
   auto quads = std::vector<Quad>();
   auto lines = std::vector<Line>();
 
-  const_cast<entt::registry&>(registry).view<
-    component::Position,
-    component::Radius,
-    component::Color,
-    component::Render
-  >().each([&quads] (
-    auto& postition,
-    auto& radius,
-    auto& color,
+  ViewEachCube(registry, [&quads] (
+    auto& cube,
     auto& render) {
-      Cube cube(postition.position, radius.radius, color.color);
       auto quads_to_add = cube.GetQuads();
       quads.insert(quads.end(), quads_to_add.begin(), quads_to_add.end());
   });
 
   graphics_.DrawQuads(quads);
   graphics_.DrawLines(lines);
+}
+
+void RenderSystem::ViewEachCube(const entt::registry& registry,
+                                const CubeCallback& callback) {
+  const_cast<entt::registry&>(registry).view<
+    component::Position,
+    component::Radius,
+    component::Color,
+    component::Render
+  >().each([&callback] (
+    auto& postition,
+    auto& radius,
+    auto& color,
+    auto& render) {
+      const Cube cube(postition.position, radius.radius, color.color);
+      callback(cube, const_cast<const component::Render&>(render));
+  });
 }
 }  // namespace render_system
 }  // namespace soup

@@ -8,7 +8,7 @@ namespace render_system {
 Cube::Cube(glm::vec3 position, float radius, glm::vec3 color) :
   position_(position), scale_(radius), color_(color) {}
 
-std::vector<Quad> Cube::GetQuads() {
+std::vector<Quad> Cube::GetQuads() const {
   std::vector<Quad> quads;
   quads.reserve(6);
   for (int8_t i = 0; i < dimensions; ++i) {
@@ -18,7 +18,7 @@ std::vector<Quad> Cube::GetQuads() {
   return quads;
 }
 
-std::vector<Line> Cube::GetLines() {
+std::vector<Line> Cube::GetLines() const {
   uint8_t edges_on_side = 4;
   std::vector<Line> lines;
   lines.reserve(12);
@@ -40,19 +40,20 @@ std::vector<Line> Cube::GetLines() {
 }
 
 glm::mat2x3 Cube::GetTopBottomSideVertices(glm::mat4x3 side_matrix,
-                                           uint8_t index) {
+                                           uint8_t index) const {
   return glm::mat2x3(
     side_matrix[index],
     side_matrix[(index + 1) % edges_on_side]);
 }
 
-Quad Cube::GetQuad(uint8_t dimension_index, float direction) {
+Quad Cube::GetQuad(uint8_t dimension_index, float direction) const {
   auto vertices = GetSideMatrix(dimension_index, direction);
   auto normal = glm::mat3(direction)[dimension_index];
   return {color_, normal, vertices};
 }
 
-glm::mat4x3 Cube::GetSideMatrix(uint8_t dimension_index, float direction) {
+glm::mat4x3 Cube::GetSideMatrix(uint8_t dimension_index,
+                                float direction) const {
   auto dimension_specific_matrix = glm::mat3x4(
     glm::row(side_base_matrix, 2),
     glm::row(side_base_matrix, 1),
