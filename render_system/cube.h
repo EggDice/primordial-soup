@@ -20,13 +20,17 @@ struct Cube {
   glm::vec3 position_;
   glm::mat3 scale_;
   glm::vec3 color_;
-  Quad GetQuad(uint8_t dimension_index, float direction) const;
-  glm::mat4x3 GetSideMatrix(uint8_t dimension_index, float direction) const;
-  glm::mat2x3 GetTopBottomSideVertices(glm::mat4x3 side_matrix,
-                                       uint8_t index) const;
-  static const glm::mat4x3 side_base_matrix;
+  Quad GetQuad(glm::vec3 normal) const;
+  glm::mat4x3 GetFaceMatrix(glm::vec3 normal) const;
+  glm::mat2x3 GetTopOrBottomFaceVertices(glm::mat4x3 face_matrix,
+                                         uint8_t index) const;
+  glm::mat2x3 GetSideFaceVertices(glm::mat4x3 top_matrix,
+                                  glm::mat4x3 bottom_matrix,
+                                  uint8_t index) const;
+  static const glm::mat4x3 face_base_matrix;
   static const uint8_t dimensions;
-  static const uint8_t edges_on_side;
+  static const uint8_t edges_on_face;
+  static const std::vector<glm::vec3> face_normals;
 };
 
 }  // namespace render_system

@@ -41,7 +41,7 @@ void RenderSystem::ViewEachCube(const entt::registry& registry,
     auto& color,
     auto& render) {
       const Cube cube(postition.position, radius.radius, color.color);
-      callback(cube, const_cast<const component::Render&>(render));
+      callback(cube, render);
   });
 }
 }  // namespace render_system
