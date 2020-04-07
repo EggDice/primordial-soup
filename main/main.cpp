@@ -83,7 +83,7 @@ void drawScene() {
   soup::render_system::Cube world({0.0f, 0.0f, 0.0f}, WORLD_RADIUS, {0.0f, 1.0f, 1.0f});
   soup::render_system::Cube cube({0.0f, 0.0f, 0.0f}, BOX_RADIUS, {1.0f, 1.0f, 0.0f});
 
-  auto quads = cube.GetQuads();
+  auto quads = cube.Render<soup::render_system::Quad>();
 
 	glBegin(GL_QUADS);
   for (auto & quad : quads) {
@@ -97,7 +97,7 @@ void drawScene() {
   glEnd();
 
 	glBegin(GL_LINES);
-	for (auto & line : world.GetLines()) {
+	for (auto & line : world.Render<soup::render_system::Line>()) {
 	  glColor3fv(glm::value_ptr(line.color));
 	  glVertex3fv(glm::value_ptr(line.vertices[0]));
 	  glVertex3fv(glm::value_ptr(line.vertices[1]));

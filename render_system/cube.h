@@ -14,8 +14,8 @@ namespace render_system {
 struct Cube {
  public:
   Cube(glm::vec3 position, float radius, glm::vec3 color);
-  std::vector<Quad> GetQuads() const;
-  std::vector<Line> GetLines() const;
+  template <class T>
+  std::vector<T> Render() const;
  private:
   glm::vec3 position_;
   glm::mat3 scale_;

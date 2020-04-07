@@ -42,7 +42,8 @@ TEST(RenderSystem, CallDrawFunctions) {
   render_system.Update(registry, 25);
 }
 
-TEST(RenderSystem, UpdateEntities) {
+
+TEST(RenderSystem, DrawQuads) {
   entt::registry registry;
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -54,6 +55,23 @@ TEST(RenderSystem, UpdateEntities) {
   rs::RenderSystem render_system(graphics);
 
   EXPECT_CALL(graphics, DrawQuads(SizeIs(6)))
+    .Times(1);
+
+  render_system.Update(registry, 25);
+}
+
+TEST(RenderSystem, DrawLines) {
+  entt::registry registry;
+  auto entity = registry.create();
+  registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
+  registry.assign<c::Radius>(entity, 1.0f);
+  registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
+  registry.assign<c::Render>(entity, c::EDGE_RENDER);
+  MockGraphics graphics = MockGraphics();
+
+  rs::RenderSystem render_system(graphics);
+
+  EXPECT_CALL(graphics, DrawLines(SizeIs(12)))
     .Times(1);
 
   render_system.Update(registry, 25);

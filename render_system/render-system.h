@@ -6,6 +6,7 @@
 #include <entt/entt.hpp>
 
 #include "cube.h"
+#include "render-buffer.h"
 #include "graphics.h"
 #include "../component/render.h"
 

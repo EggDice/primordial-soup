@@ -14,18 +14,24 @@ namespace render_system {
 RenderSystem::RenderSystem(const Graphics& graphics) : graphics_(graphics) {}
 
 void RenderSystem::Update(const entt::registry& registry, uint64_t delta_time) {
-  auto quads = std::vector<Quad>();
-  auto lines = std::vector<Line>();
+  auto quads = RenderBuffer<Quad>(1);
+  auto lines = RenderBuffer<Line>(1);
 
-  ViewEachCube(registry, [&quads] (
+  ViewEachCube(registry, [&] (
     auto& cube,
     auto& render) {
-      auto quads_to_add = cube.GetQuads();
-      quads.insert(quads.end(), quads_to_add.begin(), quads_to_add.end());
+      if (render.render_type == component::FACE_RENDER) {
+        quads.AddCube(cube);
+      }
+      if (render.render_type == component::EDGE_RENDER) {
+        lines.AddCube(cube);
+      }
   });
+  quads.Render();
+  lines.Render();
 
-  graphics_.DrawQuads(quads);
-  graphics_.DrawLines(lines);
+  graphics_.DrawQuads(quads.GetBuffer());
+  graphics_.DrawLines(lines.GetBuffer());
 }
 
 void RenderSystem::ViewEachCube(const entt::registry& registry,

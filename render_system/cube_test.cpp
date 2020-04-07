@@ -9,7 +9,7 @@ TEST(Cube, GetQuads) {
   glm::vec3 position = {1.0f, 0.0f, 0.0f};
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
   rs::Cube cube(position, 1.0f, color);
-  std::vector<rs::Quad> quads = cube.GetQuads();
+  std::vector<rs::Quad> quads = cube.Render<rs::Quad>();
 
   EXPECT_EQ(quads[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
   EXPECT_EQ(quads[0].normal, glm::vec3(1.0f, 0.0f, 0.0f));
@@ -58,7 +58,7 @@ TEST(Cube, GetLines) {
   glm::vec3 position = {1.0f, 0.0f, 0.0f};
   glm::vec3 color = {1.0f, 1.0f, 1.0f};
   rs::Cube cube(position, 2.0f, color);
-  std::vector<rs::Line> lines = cube.GetLines();
+  std::vector<rs::Line> lines = cube.Render<rs::Line>();
 
   EXPECT_EQ(lines[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
   EXPECT_EQ(lines[0].vertices[0], glm::vec3(3.0f, 2.0f, 2.0f));

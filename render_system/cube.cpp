@@ -14,7 +14,8 @@ namespace render_system {
 Cube::Cube(glm::vec3 position, float radius, glm::vec3 color) :
   position_(position), scale_(radius), color_(color) {}
 
-std::vector<Quad> Cube::GetQuads() const {
+template <>
+std::vector<Quad> Cube::Render<Quad>() const {
   std::vector<Quad> quads;
   quads.reserve(6);
   transform(face_normals.begin(),
@@ -26,7 +27,8 @@ std::vector<Quad> Cube::GetQuads() const {
   return quads;
 }
 
-std::vector<Line> Cube::GetLines() const {
+template <>
+std::vector<Line> Cube::Render<Line>() const {
   uint8_t edges_on_face = 4;
   std::vector<Line> lines;
   lines.reserve(12);
