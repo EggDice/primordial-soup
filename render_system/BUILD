@@ -10,7 +10,6 @@ cc_library(
     hdrs = glob(["*.h"]),
     srcs = glob(["*.cpp"], ["*_test.cpp"]),
     linkopts = ["-lglut -lGL -lGLU"],
-    visibility = ["//main:__pkg__"],
     deps = [
         "@glm//:glm",
         "@entt//:entt",
