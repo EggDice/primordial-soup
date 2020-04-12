@@ -1,21 +1,25 @@
-#ifndef RENDER_SYSTEM_CUBE_H_
-#define RENDER_SYSTEM_CUBE_H_
+#ifndef GEOMETRY_CUBE_H_
+#define GEOMETRY_CUBE_H_
 
 #include <vector>
 
 #include <glm/glm.hpp>
 
-#include "quad.h"
-#include "line.h"
+#include "cube-edges.h"
+#include "cube-faces.h"
 
 namespace soup {
-namespace render_system {
+namespace geometry {
+
+struct EdgesForDirection {
+  Line edges[3];
+};
 
 struct Cube {
  public:
   Cube(glm::vec3 position, float radius, glm::vec3 color);
-  template <class T>
-  std::vector<T> Render() const;
+  CubeEdges GetEdges() const;
+  CubeFaces GetFaces() const;
  private:
   glm::vec3 position_;
   glm::mat3 scale_;
@@ -27,13 +31,17 @@ struct Cube {
   glm::mat2x3 GetSideFaceVertices(glm::mat4x3 top_matrix,
                                   glm::mat4x3 bottom_matrix,
                                   uint8_t index) const;
+  glm::vec3 GetEdgeNormal(glm::mat2x3 edge) const;
+  EdgesForDirection GetEdgesForDirection(uint8_t index,
+                                         glm::mat4x3 top,
+                                         glm::mat4x3 bottom) const;
   static const glm::mat4x3 face_base_matrix;
   static const uint8_t dimensions;
   static const uint8_t edges_on_face;
   static const std::vector<glm::vec3> face_normals;
 };
 
-}  // namespace render_system
+}  // namespace geometry
 }  // namespace soup
 
-#endif  // RENDER_SYSTEM_CUBE_H_
+#endif  // GEOMETRY_CUBE_H_

@@ -12,14 +12,20 @@
 #include "../component/position.h"
 #include "../component/radius.h"
 #include "../component/color.h"
-#include "../component/render.h"
+#include "../component/render-cube-faces.h"
+#include "../component/render-cube-edges.h"
 
 namespace soup {
 
 Program::Program() :
-  angleX_(0), angleY_(0), graphics_(), render_system_(graphics_) {}
+  angleX_(0),
+  angleY_(0),
+  graphics_(),
+  graphics_system_(graphics_),
+  render_system_() {}
 
 void Program::Init(int argc, char** argv) {
+  // TODO(EggDice) move to window entity and system
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
   glutInitWindowSize(400, 400);
@@ -27,11 +33,13 @@ void Program::Init(int argc, char** argv) {
 
   graphics_.Init();
   auto world_entity = registry_.create();
+
   registry_.assign<component::Position>(world_entity,
                                         glm::vec3(0.0f, 0.0f, 0.0f));
   registry_.assign<component::Radius>(world_entity, 20.0f);
   registry_.assign<component::Color>(world_entity, glm::vec3(0.0f, 1.0f, 0.0f));
-  registry_.assign<component::Render>(world_entity, component::EDGE_RENDER);
+  registry_.assign<component::RenderCubeEdges>(world_entity,
+                                               component::RenderCubeEdges{});
 
   auto element_entity = registry_.create();
   registry_.assign<component::Position>(element_entity,
@@ -39,7 +47,8 @@ void Program::Init(int argc, char** argv) {
   registry_.assign<component::Radius>(element_entity, 0.5f);
   registry_.assign<component::Color>(element_entity,
                                      glm::vec3(1.0f, 0.0f, 1.0f));
-  registry_.assign<component::Render>(element_entity, component::FACE_RENDER);
+  registry_.assign<component::RenderCubeFaces>(element_entity,
+                                               component::RenderCubeFaces{});
 }
 
 void Program::HandleDisplay() {
@@ -59,6 +68,7 @@ void Program::HandleDisplay() {
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
   render_system_.Update(registry_, tick_time);
+  graphics_system_.Update(registry_, tick_time);
 
   graphics_.TearDownScene();
 }

@@ -1,7 +1,6 @@
 #include "cube.h"
 
 #include <algorithm>
-#include <iterator>
 #include <cstdlib>
 
 #include <glm/gtc/matrix_access.hpp>
@@ -9,42 +8,39 @@
 #include <glm/geometric.hpp>
 
 namespace soup {
-namespace render_system {
+namespace geometry {
 
 Cube::Cube(glm::vec3 position, float radius, glm::vec3 color) :
   position_(position), scale_(radius), color_(color) {}
 
-template <>
-std::vector<Quad> Cube::Render<Quad>() const {
-  std::vector<Quad> quads;
-  quads.reserve(6);
+CubeFaces Cube::GetFaces() const {
+  CubeFaces faces{};
   transform(face_normals.begin(),
             face_normals.end(),
-            std::back_inserter(quads),
+            faces.faces,
             [&] (auto& normal) {
               return GetQuad(normal);
             });
-  return quads;
+  return faces;
 }
 
-template <>
-std::vector<Line> Cube::Render<Line>() const {
+CubeEdges Cube::GetEdges() const {
   uint8_t edges_on_face = 4;
-  std::vector<Line> lines;
-  lines.reserve(12);
-
+  uint8_t edges_per_direction = 3;
+  CubeEdges edges{};
   auto top = GetFaceMatrix(glm::vec3(1.0f, 0.0f, 0.0f));
   auto bottom = GetFaceMatrix(glm::vec3(-1.0f, 0.0f, 0.0f));
-
   for (int8_t i = 0; i < edges_on_face; ++i) {
-    auto top_vertices = GetTopOrBottomFaceVertices(top, i);
-    lines.push_back({color_, top_vertices});
-    auto bottom_vertices = GetTopOrBottomFaceVertices(bottom, i);
-    lines.push_back({color_, bottom_vertices});
-    auto side_vertices = GetSideFaceVertices(top, bottom, i);
-    lines.push_back({color_, side_vertices});
+    auto edges_for_direction = GetEdgesForDirection(i, top, bottom).edges;
+    std::copy(edges_for_direction,
+              edges_for_direction + edges_per_direction,
+              edges.edges + i * edges_per_direction);
   }
-  return lines;
+  return edges;
+}
+
+glm::vec3 Cube::GetEdgeNormal(glm::mat2x3 edge) const {
+  return glm::normalize(edge[0] + edge[1] - 2.0f * position_);
 }
 
 glm::mat2x3 Cube::GetTopOrBottomFaceVertices(glm::mat4x3 face_matrix,
@@ -78,6 +74,22 @@ glm::mat4x3 Cube::GetFaceMatrix(glm::vec3 normal) const {
   return position_matrix + scale_ * face_specific_matrix * direction;
 }
 
+EdgesForDirection Cube::GetEdgesForDirection(uint8_t index,
+                                             glm::mat4x3 top,
+                                             glm::mat4x3 bottom) const {
+  auto top_vertices = GetTopOrBottomFaceVertices(top, index);
+  auto top_normal = GetEdgeNormal(top_vertices);
+  auto bottom_vertices = GetTopOrBottomFaceVertices(bottom, index);
+  auto bottom_normal = GetEdgeNormal(bottom_vertices);
+  auto side_vertices = GetSideFaceVertices(top, bottom, index);
+  auto side_normal = GetEdgeNormal(side_vertices);
+  return  EdgesForDirection{{
+    {color_, top_normal, top_vertices},
+    {color_, bottom_normal, bottom_vertices},
+    {color_, side_normal, side_vertices}
+  }};
+}
+
 const glm::mat4x3 Cube::face_base_matrix = glm::mat4x3(
   glm::vec3(1.0f, 1.0f, 1.0f),
   glm::vec3(-1.0f, 1.0f, 1.0f),
@@ -97,5 +109,5 @@ const std::vector<glm::vec3> Cube::face_normals = {
   glm::vec3(0.0f, 0.0f, -1.0f)
 };
 
-}  // namespace render_system
+}  // namespace geometry
 }  // namespace soup

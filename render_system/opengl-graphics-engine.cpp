@@ -1,4 +1,4 @@
-#include "opengl-graphics.h"
+#include "opengl-graphics-engine.h"
 
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
@@ -12,7 +12,7 @@
 namespace soup {
 namespace render_system {
 
-void OpenGlGraphics::Init() {
+void OpenGlGraphicsEngine::Init() {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -20,18 +20,19 @@ void OpenGlGraphics::Init() {
   glEnable(GL_COLOR_MATERIAL);
 }
 
-void OpenGlGraphics::SetupScene() {
+void OpenGlGraphicsEngine::SetupScene() {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
 
-void OpenGlGraphics::TearDownScene() {
+void OpenGlGraphicsEngine::TearDownScene() {
   glutSwapBuffers();
 }
 
-void OpenGlGraphics::DrawQuads(const std::vector<Quad>& quads) const {
+void OpenGlGraphicsEngine::
+    DrawQuads(const std::vector<geometry::Quad>& quads) const {
   glBegin(GL_QUADS);
   for (auto& quad : quads) {
     glColor3fv(glm::value_ptr(quad.color));
@@ -43,10 +44,12 @@ void OpenGlGraphics::DrawQuads(const std::vector<Quad>& quads) const {
   glEnd();
 }
 
-void OpenGlGraphics::DrawLines(const std::vector<Line>& lines) const {
+void OpenGlGraphicsEngine::
+    DrawLines(const std::vector<geometry::Line>& lines) const {
   glBegin(GL_LINES);
   for (auto& line : lines) {
     glColor3fv(glm::value_ptr(line.color));
+    glNormal3fv(glm::value_ptr(line.normal));
     for (uint8_t i = 0; i < 2; ++i) {
       glVertex3fv(glm::value_ptr(line.vertices[i]));
     }

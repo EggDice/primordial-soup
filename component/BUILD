@@ -7,6 +7,9 @@ cc_library(
     hdrs = glob(["*.h"]),
     srcs = glob(["*.cpp"], ["*_test.cpp"]),
     linkopts = ["-lglut -lGL -lGLU"],
+    deps = [
+        "//geometry:geometry",
+    ],
 )
 
 cc_library(

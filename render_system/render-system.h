@@ -5,25 +5,26 @@
 
 #include <entt/entt.hpp>
 
-#include "cube.h"
-#include "render-buffer.h"
-#include "graphics.h"
-#include "../component/render.h"
+#include "../geometry/cube.h"
 
 namespace soup {
 namespace render_system {
 
-typedef std::function<void(const Cube&, const component::Render&)> CubeCallback;
+template <typename T>
+using CubeCallback = std::function<
+  void(const geometry::Cube&, T&)
+>;
 
 class RenderSystem {
  public:
-  explicit RenderSystem(const Graphics& graphics);
+  RenderSystem();
   void Update(const entt::registry& registry, uint64_t delta_time);
  private:
-  const Graphics& graphics_;
+  template <typename T>
   void ViewEachCube(
       const entt::registry& registry,
-      const CubeCallback& callback);
+      const CubeCallback<T>& callback
+);
 };
 
 }  // namespace render_system

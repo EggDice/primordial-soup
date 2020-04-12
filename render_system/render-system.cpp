@@ -2,53 +2,47 @@
 
 #include <vector>
 
-#include "cube.h"
 #include "../component/position.h"
 #include "../component/radius.h"
 #include "../component/color.h"
-#include "../component/render.h"
+#include "../component/render-cube-faces.h"
+#include "../component/render-cube-edges.h"
 
 namespace soup {
 namespace render_system {
 
-RenderSystem::RenderSystem(const Graphics& graphics) : graphics_(graphics) {}
+RenderSystem::RenderSystem() {}
 
 void RenderSystem::Update(const entt::registry& registry, uint64_t delta_time) {
-  auto quads = RenderBuffer<Quad>(1);
-  auto lines = RenderBuffer<Line>(1);
-
-  ViewEachCube(registry, [&] (
-    auto& cube,
-    auto& render) {
-      if (render.render_type == component::FACE_RENDER) {
-        quads.AddCube(cube);
-      }
-      if (render.render_type == component::EDGE_RENDER) {
-        lines.AddCube(cube);
-      }
+  ViewEachCube<component::RenderCubeFaces>(registry, [](const auto& cube,
+                                                        auto& render) {
+    render = cube.GetFaces();
   });
-  quads.Render();
-  lines.Render();
-
-  graphics_.DrawQuads(quads.GetBuffer());
-  graphics_.DrawLines(lines.GetBuffer());
+  ViewEachCube<component::RenderCubeEdges>(registry, [](const auto& cube,
+                                                        auto& render) {
+    render = cube.GetEdges();
+  });
 }
 
+template <typename T>
 void RenderSystem::ViewEachCube(const entt::registry& registry,
-                                const CubeCallback& callback) {
+                                const CubeCallback<T>& callback
+) {
   const_cast<entt::registry&>(registry).view<
     component::Position,
     component::Radius,
     component::Color,
-    component::Render
+    T
   >().each([&callback] (
     auto& postition,
     auto& radius,
     auto& color,
     auto& render) {
-      const Cube cube(postition.position, radius.radius, color.color);
-      callback(cube, render);
+      callback(
+        geometry::Cube{postition.position, radius.radius, color.color},
+        render);
   });
 }
+
 }  // namespace render_system
 }  // namespace soup

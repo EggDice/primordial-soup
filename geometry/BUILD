@@ -1,15 +1,17 @@
 _msvc_copts = ["/std:c++17"]
 _gcc_copts = ["-std=c++17"]
 
-cc_binary(
-    name = "soup",
-    srcs = ["main.cpp"],
+load("//tools:cpplint.bzl", "cpplint")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "geometry",
+    hdrs = glob(["*.h"]),
+    srcs = glob(["*.cpp"], ["*_test.cpp"]),
     linkopts = ["-lglut -lGL -lGLU"],
     deps = [
         "@glm//:glm",
-        "//program:program",
-        "//render_system:render_system",
-
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -19,17 +21,14 @@ cc_binary(
     }),
 )
 
-cc_test(
-    name = "test",
-    srcs = ["test-main.cpp"],
+cc_library(
+    name = "geometry_test",
+    hdrs = glob(["*.h"]),
+    srcs = glob(["*_test.cpp"]),
+    visibility = ["//main:__pkg__"],
     deps = [
-        "@glm//:glm",
         "@gtest//:gtest",
-        "//render_system:render_system",
-        "//render_system:render_system_test",
-        "//geometry:geometry_test",
-        "//component:component_test",
-        "//program:program_test",
+        "@glm//:glm",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -38,3 +37,9 @@ cc_test(
       "//conditions:default": _gcc_copts,
     }),
 )
+
+exports_files([
+    "CPPLINT.cfg",
+])
+
+cpplint()

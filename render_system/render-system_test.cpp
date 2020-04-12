@@ -8,72 +8,48 @@
 #include "../component/position.h"
 #include "../component/radius.h"
 #include "../component/color.h"
-#include "../component/render.h"
+#include "../component/render-cube-faces.h"
+#include "../component/render-cube-edges.h"
 
 namespace rs = soup::render_system;
 namespace c = soup::component;
-
-class MockGraphics : public rs::Graphics {
- public:
-  MOCK_METHOD(void, Init, (), (override));
-  MOCK_METHOD(void, SetupScene, (), (override));
-  MOCK_METHOD(void, TearDownScene, (), (override));
-  MOCK_METHOD(void, DrawQuads, (const std::vector<rs::Quad>& quads), (const));
-  MOCK_METHOD(void, DrawLines, (const std::vector<rs::Line>& lines), (const));
-};
 
 namespace {
 
 using ::testing::_;
 using ::testing::SizeIs;
 
-TEST(RenderSystem, CallDrawFunctions) {
-  entt::registry registry;
-  MockGraphics graphics = MockGraphics();
-
-  rs::RenderSystem render_system(graphics);
-
-  EXPECT_CALL(graphics, DrawQuads(_))
-    .Times(1);
-
-  EXPECT_CALL(graphics, DrawLines(_))
-    .Times(1);
-
-  render_system.Update(registry, 25);
-}
-
-
-TEST(RenderSystem, DrawQuads) {
+TEST(RenderSystem, RenderFaces) {
+  rs::RenderSystem render_system{};
   entt::registry registry;
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
   registry.assign<c::Radius>(entity, 1.0f);
   registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
-  registry.assign<c::Render>(entity, c::FACE_RENDER);
-  MockGraphics graphics = MockGraphics();
-
-  rs::RenderSystem render_system(graphics);
-
-  EXPECT_CALL(graphics, DrawQuads(SizeIs(6)))
-    .Times(1);
+  registry.assign<c::RenderCubeFaces>(entity, c::RenderCubeFaces{});
 
   render_system.Update(registry, 25);
+
+  auto faces = registry.get<c::RenderCubeFaces>(entity);
+
+  EXPECT_EQ(faces.faces[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
 }
 
-TEST(RenderSystem, DrawLines) {
+TEST(RenderSystem, RenderEdges) {
+  rs::RenderSystem render_system{};
   entt::registry registry;
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
   registry.assign<c::Radius>(entity, 1.0f);
   registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
-  registry.assign<c::Render>(entity, c::EDGE_RENDER);
-  MockGraphics graphics = MockGraphics();
-
-  rs::RenderSystem render_system(graphics);
-
-  EXPECT_CALL(graphics, DrawLines(SizeIs(12)))
-    .Times(1);
+  registry.assign<c::RenderCubeEdges>(entity, c::RenderCubeEdges{});
 
   render_system.Update(registry, 25);
+
+  auto edges = registry.get<c::RenderCubeEdges>(entity);
+
+  EXPECT_EQ(edges.edges[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
 }
+
 }  // namespace
+
