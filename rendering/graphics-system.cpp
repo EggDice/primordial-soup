@@ -6,7 +6,7 @@
 #include "../component/render-cube-edges.h"
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 GraphicsSystem::GraphicsSystem(const GraphicsEngine& graphics) :
   graphics_engine_(graphics) {}
@@ -30,5 +30,5 @@ void GraphicsSystem::Update(const entt::registry& registry,
   graphics_engine_.DrawLines(lines);
 }
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup

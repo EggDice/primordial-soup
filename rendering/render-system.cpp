@@ -9,7 +9,7 @@
 #include "../component/render-cube-edges.h"
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 RenderSystem::RenderSystem() {}
 
@@ -44,5 +44,5 @@ void RenderSystem::ViewEachCube(const entt::registry& registry,
   });
 }
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup

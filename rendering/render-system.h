@@ -1,5 +1,5 @@
-#ifndef RENDER_SYSTEM_RENDER_SYSTEM_H_
-#define RENDER_SYSTEM_RENDER_SYSTEM_H_
+#ifndef RENDERING_RENDER_SYSTEM_H_
+#define RENDERING_RENDER_SYSTEM_H_
 
 #include <functional>
 
@@ -8,7 +8,7 @@
 #include "../geometry/cube.h"
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 template <typename T>
 using CubeCallback = std::function<
@@ -27,7 +27,7 @@ class RenderSystem {
 );
 };
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup
 
-#endif  // RENDER_SYSTEM_RENDER_SYSTEM_H_
+#endif  // RENDERING_RENDER_SYSTEM_H_

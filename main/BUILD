@@ -8,7 +8,7 @@ cc_binary(
     deps = [
         "@glm//:glm",
         "//program:program",
-        "//render_system:render_system",
+        "//rendering:rendering",
 
     ],
     copts = select({
@@ -25,8 +25,8 @@ cc_test(
     deps = [
         "@glm//:glm",
         "@gtest//:gtest",
-        "//render_system:render_system",
-        "//render_system:render_system_test",
+        "//rendering:rendering",
+        "//rendering:rendering_test",
         "//geometry:geometry_test",
         "//component:component_test",
         "//program:program_test",

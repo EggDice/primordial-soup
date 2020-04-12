@@ -10,7 +10,7 @@
 
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 void OpenGlGraphicsEngine::Init() {
   glEnable(GL_DEPTH_TEST);
@@ -57,7 +57,7 @@ void OpenGlGraphicsEngine::
   glEnd();
 }
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup
 
 

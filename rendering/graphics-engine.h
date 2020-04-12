@@ -1,5 +1,5 @@
-#ifndef RENDER_SYSTEM_GRAPHICS_ENGINE_H_
-#define RENDER_SYSTEM_GRAPHICS_ENGINE_H_
+#ifndef RENDERING_GRAPHICS_ENGINE_H_
+#define RENDERING_GRAPHICS_ENGINE_H_
 
 #include <vector>
 
@@ -7,7 +7,7 @@
 #include "../geometry/line.h"
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 class GraphicsEngine {
  public:
@@ -19,7 +19,7 @@ class GraphicsEngine {
   virtual void DrawLines(const std::vector<geometry::Line>& lines) const = 0;
 };
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup
 
-#endif  // RENDER_SYSTEM_GRAPHICS_ENGINE_H_
+#endif  // RENDERING_GRAPHICS_ENGINE_H_

@@ -33,7 +33,6 @@ void Program::Init(int argc, char** argv) {
 
   graphics_.Init();
   auto world_entity = registry_.create();
-
   registry_.assign<component::Position>(world_entity,
                                         glm::vec3(0.0f, 0.0f, 0.0f));
   registry_.assign<component::Radius>(world_entity, 20.0f);
@@ -67,7 +66,6 @@ void Program::HandleDisplay() {
   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
-  render_system_.Update(registry_, tick_time);
   graphics_system_.Update(registry_, tick_time);
 
   graphics_.TearDownScene();
@@ -113,6 +111,7 @@ void Program::HandleResize(int w, int h) {
 void Program::HandleMouse(int button, int state, int x, int y) {}
 
 void Program::HandleTick(int value) {
+  render_system_.Update(registry_, tick_time);
   glutPostRedisplay();
 }
 

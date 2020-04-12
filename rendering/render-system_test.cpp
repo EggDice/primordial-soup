@@ -11,7 +11,7 @@
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
 
-namespace rs = soup::render_system;
+namespace r = soup::rendering;
 namespace c = soup::component;
 
 namespace {
@@ -20,7 +20,7 @@ using ::testing::_;
 using ::testing::SizeIs;
 
 TEST(RenderSystem, RenderFaces) {
-  rs::RenderSystem render_system{};
+  r::RenderSystem render_system{};
   entt::registry registry;
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -36,7 +36,7 @@ TEST(RenderSystem, RenderFaces) {
 }
 
 TEST(RenderSystem, RenderEdges) {
-  rs::RenderSystem render_system{};
+  r::RenderSystem render_system{};
   entt::registry registry;
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));

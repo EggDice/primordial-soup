@@ -8,11 +8,11 @@
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
 
-namespace rs = soup::render_system;
+namespace r = soup::rendering;
 namespace c = soup::component;
 namespace g = soup::geometry;
 
-class MockGraphicsEngine : public rs::GraphicsEngine {
+class MockGraphicsEngine : public r::GraphicsEngine {
  public:
   MOCK_METHOD(void, Init, (), (override));
   MOCK_METHOD(void, SetupScene, (), (override));
@@ -28,7 +28,7 @@ using ::testing::SizeIs;
 
 TEST(GraphicsSystem, DrawQuads) {
   MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  rs::GraphicsSystem graphics_system(graphics_engine);
+  r::GraphicsSystem graphics_system(graphics_engine);
 
   entt::registry registry;
   auto entity = registry.create();
@@ -42,7 +42,7 @@ TEST(GraphicsSystem, DrawQuads) {
 
 TEST(RenderSystem, DrawLines) {
   MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  rs::GraphicsSystem graphics_system(graphics_engine);
+  r::GraphicsSystem graphics_system(graphics_engine);
 
   entt::registry registry;
   auto entity = registry.create();

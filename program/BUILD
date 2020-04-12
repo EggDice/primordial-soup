@@ -11,7 +11,7 @@ cc_library(
     srcs = glob(["*.cpp"], ["*_test.cpp"]),
     deps = [
         "@entt//:entt",
-        "//render_system:render_system",
+        "//rendering:rendering",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,

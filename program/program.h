@@ -4,9 +4,9 @@
 #include <cstdint>
 #include <string>
 
-#include "../render_system/render-system.h"
-#include "../render_system/graphics-system.h"
-#include "../render_system/opengl-graphics-engine.h"
+#include "../rendering/render-system.h"
+#include "../rendering/graphics-system.h"
+#include "../rendering/opengl-graphics-engine.h"
 
 namespace soup {
 class Program {
@@ -31,9 +31,9 @@ class Program {
  private:
   float angleX_;
   float angleY_;
-  render_system::OpenGlGraphicsEngine graphics_;
-  render_system::GraphicsSystem graphics_system_;
-  render_system::RenderSystem render_system_;
+  rendering::OpenGlGraphicsEngine graphics_;
+  rendering::GraphicsSystem graphics_system_;
+  rendering::RenderSystem render_system_;
   entt::registry registry_;
   static const char name_[];
 };

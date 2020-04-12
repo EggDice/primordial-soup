@@ -1,7 +1,5 @@
-#ifndef RENDER_SYSTEM_GRAPHICS_SYSTEM_H_
-#define RENDER_SYSTEM_GRAPHICS_SYSTEM_H_
-
-#include <functional>
+#ifndef RENDERING_GRAPHICS_SYSTEM_H_
+#define RENDERING_GRAPHICS_SYSTEM_H_
 
 #include <entt/entt.hpp>
 
@@ -9,7 +7,7 @@
 #include "../component/render-cube-faces.h"
 
 namespace soup {
-namespace render_system {
+namespace rendering {
 
 class GraphicsSystem {
  public:
@@ -19,7 +17,7 @@ class GraphicsSystem {
   const GraphicsEngine& graphics_engine_;
 };
 
-}  // namespace render_system
+}  // namespace rendering
 }  // namespace soup
 
-#endif  // RENDER_SYSTEM_GRAPHICS_SYSTEM_H_
+#endif  // RENDERING_GRAPHICS_SYSTEM_H_
