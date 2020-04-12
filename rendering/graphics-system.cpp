@@ -4,6 +4,7 @@
 
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
+#include "../component/render-camera.h"
 
 namespace soup {
 namespace rendering {
@@ -13,6 +14,12 @@ GraphicsSystem::GraphicsSystem(const GraphicsEngine& graphics) :
 
 void GraphicsSystem::Update(const entt::registry& registry,
                             uint64_t delta_time) {
+  const_cast<entt::registry&>(registry).view<
+    component::RenderCamera
+  >().each([this] (auto& camera) {
+    graphics_engine_.PlaceCamera(camera);
+  });
+
   std::vector<geometry::Quad> quads;
   const_cast<entt::registry&>(registry).view<
     component::RenderCubeFaces

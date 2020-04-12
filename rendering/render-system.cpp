@@ -1,12 +1,12 @@
 #include "render-system.h"
 
-#include <vector>
-
 #include "../component/position.h"
 #include "../component/radius.h"
+#include "../component/rotation.h"
 #include "../component/color.h"
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
+#include "../component/render-camera.h"
 
 namespace soup {
 namespace rendering {
@@ -22,6 +22,16 @@ void RenderSystem::Update(const entt::registry& registry, uint64_t delta_time) {
                                                         auto& render) {
     render = cube.GetEdges();
   });
+  const_cast<entt::registry&>(registry).view<
+    component::Position,
+    component::Rotation,
+    component::RenderCamera
+  >().each([](const auto& position, const auto& rotation, auto& render) {
+    render = component::RenderCamera(
+      position.position,
+      rotation.angle_x,
+      rotation.angle_y);
+  });
 }
 
 template <typename T>
@@ -34,12 +44,12 @@ void RenderSystem::ViewEachCube(const entt::registry& registry,
     component::Color,
     T
   >().each([&callback] (
-    auto& postition,
+    auto& position,
     auto& radius,
     auto& color,
     auto& render) {
       callback(
-        geometry::Cube{postition.position, radius.radius, color.color},
+        geometry::Cube{position.position, radius.radius, color.color},
         render);
   });
 }

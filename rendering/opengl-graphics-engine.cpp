@@ -57,6 +57,14 @@ void OpenGlGraphicsEngine::
   glEnd();
 }
 
+
+void OpenGlGraphicsEngine::
+    PlaceCamera(const geometry::Transform& t) const {
+  glTranslatef(t.translate[0], t.translate[1], t.translate[2]);
+  glRotatef(t.rotate_x[0], t.rotate_x[1], t.rotate_x[2], t.rotate_x[3]);
+  glRotatef(t.rotate_y[0], t.rotate_y[1], t.rotate_y[2], t.rotate_y[3]);
+}
+
 }  // namespace rendering
 }  // namespace soup
 

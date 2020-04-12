@@ -17,6 +17,7 @@ class OpenGlGraphicsEngine : public GraphicsEngine {
   void TearDownScene();
   void DrawQuads(const std::vector<geometry::Quad>& quad) const;
   void DrawLines(const std::vector<geometry::Line>& line) const;
+  void PlaceCamera(const geometry::Transform& transfprm) const;
 };
 
 }  // namespace rendering

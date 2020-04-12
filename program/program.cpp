@@ -11,9 +11,11 @@
 
 #include "../component/position.h"
 #include "../component/radius.h"
+#include "../component/rotation.h"
 #include "../component/color.h"
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
+#include "../component/render-camera.h"
 
 namespace soup {
 
@@ -48,15 +50,18 @@ void Program::Init(int argc, char** argv) {
                                      glm::vec3(1.0f, 0.0f, 1.0f));
   registry_.assign<component::RenderCubeFaces>(element_entity,
                                                component::RenderCubeFaces{});
+
+  auto camera_entity = registry_.create();
+  registry_.assign<component::Position>(camera_entity,
+                                        glm::vec3(0.0f, 0.0f, 80.0f));
+  registry_.assign<component::Rotation>(camera_entity,
+                                        component::Rotation{10.0f, 20.0f});
+  registry_.assign<component::RenderCamera>(camera_entity,
+                                            component::RenderCamera{});
 }
 
 void Program::HandleDisplay() {
   graphics_.SetupScene();
-
-  // TODO(EggDice): Move to render system and camera entity
-  glTranslatef(0.0f, 0.0f, -80.0f);
-  glRotatef(-angleX_, 1.0f, 0.0f, 0.0f);
-  glRotatef(-angleY_, 0.0f, 1.0f, 0.0f);
 
   // TODO(EggDice): Move to render system and light entity
   GLfloat ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};

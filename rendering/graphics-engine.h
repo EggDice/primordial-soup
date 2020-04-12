@@ -5,6 +5,7 @@
 
 #include "../geometry/quad.h"
 #include "../geometry/line.h"
+#include "../geometry/transform.h"
 
 namespace soup {
 namespace rendering {
@@ -17,6 +18,7 @@ class GraphicsEngine {
   virtual void TearDownScene() = 0;
   virtual void DrawQuads(const std::vector<geometry::Quad>& quads) const = 0;
   virtual void DrawLines(const std::vector<geometry::Line>& lines) const = 0;
+  virtual void PlaceCamera(const geometry::Transform& t) const = 0;
 };
 
 }  // namespace rendering
