@@ -9,7 +9,6 @@ cc_binary(
         "@glm//:glm",
         "//program:program",
         "//rendering:rendering",
-
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -30,6 +29,9 @@ cc_test(
         "//geometry:geometry_test",
         "//component:component_test",
         "//program:program_test",
+        "//event:event",
+        "//controls:controls",
+        "//controls:controls_test",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
