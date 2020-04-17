@@ -17,6 +17,8 @@
 #include "../component/render-cube-edges.h"
 #include "../component/render-camera.h"
 #include "../component/control-keyboard-rotate.h"
+#include "../component/render-ambient-light.h"
+#include "../component/render-diffuse-light.h"
 #include "../event/glut-connector.h"
 
 namespace soup {
@@ -36,6 +38,7 @@ void Program::Init(int argc, char** argv) {
   glutCreateWindow(name_);
 
   graphics_.Init();
+
   auto world_entity = registry_.create();
   registry_.assign<component::Position>(world_entity,
                                         glm::vec3(0.0f, 0.0f, 0.0f));
@@ -60,6 +63,22 @@ void Program::Init(int argc, char** argv) {
                                         component::Rotation{10.0f, 20.0f});
   registry_.assign<component::RenderCamera>(camera_entity,
                                             component::RenderCamera{});
+
+  auto ambient_light_entity = registry_.create();
+  auto ambient_light = component::RenderAmbientLight{
+    glm::vec4(0.3f, 0.3f, 0.3f, 1.0f)
+  };
+  registry_.assign<component::RenderAmbientLight>(ambient_light_entity,
+                                                  ambient_light);
+
+  auto diffuse_light_entity = registry_.create();
+  auto diffuse_light = component::RenderDiffuseLight{
+    glm::vec4(0.8f, 0.8f, 0.8f, 1.0f),
+    glm::vec4(-60.0f, 0.0f, 60.0f, 1.0f)
+  };
+  registry_.assign<component::RenderDiffuseLight>(diffuse_light_entity,
+                                                  diffuse_light);
+
   auto keyboard_rotate = component::ControlKeyBoardRotate{{
     {event::ARROW_RIGHT_KEY, {0.0f, 5.0f}},
     {event::ARROW_LEFT_KEY, {0.0f, -5.0f}},
@@ -77,19 +96,7 @@ void Program::Init(int argc, char** argv) {
 }
 
 void Program::HandleDisplay() {
-  graphics_.SetupScene();
-
-  // TODO(EggDice): Move to render system and light entity
-  GLfloat ambientLight[] = {0.2f, 0.2f, 0.2f, 1.0f};
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
-  GLfloat lightColor[] = {0.8f, 0.8f, 0.8f, 1.0f};
-  GLfloat lightPos[] = {-60.0f, 0.0f, 60.0f, 1.0f};
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
   graphics_system_.Update(registry_, tick_time);
-
-  graphics_.TearDownScene();
 }
 
 void Program::HandleKeypress(unsigned char key, int x, int y) {

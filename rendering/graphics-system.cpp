@@ -5,6 +5,8 @@
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
 #include "../component/render-camera.h"
+#include "../component/render-ambient-light.h"
+#include "../component/render-diffuse-light.h"
 
 namespace soup {
 namespace rendering {
@@ -14,6 +16,21 @@ GraphicsSystem::GraphicsSystem(const GraphicsEngine& graphics) :
 
 void GraphicsSystem::Update(const entt::registry& registry,
                             uint64_t delta_time) {
+  graphics_engine_.SetupScene();
+
+  const_cast<entt::registry&>(registry).view<
+    component::RenderAmbientLight
+  >().each([this] (auto& ambient_light) {
+    graphics_engine_.RenderAmbientLight(ambient_light.color);
+  });
+
+  const_cast<entt::registry&>(registry).view<
+    component::RenderDiffuseLight
+  >().each([this] (auto& diffuse_light) {
+    graphics_engine_.RenderDiffuseLight(diffuse_light.color,
+                                        diffuse_light.position);
+  });
+
   const_cast<entt::registry&>(registry).view<
     component::RenderCamera
   >().each([this] (auto& camera) {
@@ -35,6 +52,8 @@ void GraphicsSystem::Update(const entt::registry& registry,
     lines.insert(lines.end(), edges.edges, edges.edges + 12);
   });
   graphics_engine_.DrawLines(lines);
+
+  graphics_engine_.TearDownScene();
 }
 
 }  // namespace rendering

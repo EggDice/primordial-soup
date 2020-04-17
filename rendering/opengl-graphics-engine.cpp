@@ -12,7 +12,7 @@
 namespace soup {
 namespace rendering {
 
-void OpenGlGraphicsEngine::Init() {
+void OpenGlGraphicsEngine::Init() const {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -20,14 +20,14 @@ void OpenGlGraphicsEngine::Init() {
   glEnable(GL_COLOR_MATERIAL);
 }
 
-void OpenGlGraphicsEngine::SetupScene() {
+void OpenGlGraphicsEngine::SetupScene() const {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glMatrixMode(GL_MODELVIEW);
   glLoadIdentity();
 }
 
-void OpenGlGraphicsEngine::TearDownScene() {
+void OpenGlGraphicsEngine::TearDownScene() const {
   glutSwapBuffers();
 }
 
@@ -63,6 +63,16 @@ void OpenGlGraphicsEngine::
   glTranslatef(t.translate[0], t.translate[1], t.translate[2]);
   glRotatef(t.rotate_x[0], t.rotate_x[1], t.rotate_x[2], t.rotate_x[3]);
   glRotatef(t.rotate_y[0], t.rotate_y[1], t.rotate_y[2], t.rotate_y[3]);
+}
+
+void OpenGlGraphicsEngine::RenderAmbientLight(const glm::vec4& color) const {
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, glm::value_ptr(color));
+}
+
+void OpenGlGraphicsEngine::RenderDiffuseLight(const glm::vec4& color,
+                                              const glm::vec4& position) const {
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(color));
+  glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(position));
 }
 
 }  // namespace rendering
