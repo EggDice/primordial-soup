@@ -10,6 +10,8 @@
 #include "../component/render-camera.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
+#include "../component/window.h"
+#include "../component/is-updated.h"
 
 namespace r = soup::rendering;
 namespace c = soup::component;
@@ -17,7 +19,9 @@ namespace g = soup::geometry;
 
 class MockGraphicsEngine : public r::GraphicsEngine {
  public:
-  MOCK_METHOD(void, Init, (), (const));
+  MOCK_METHOD(void, Init, (int * argcp,
+                           char **argv,
+                           const c::Window& window), (const));
   MOCK_METHOD(void, SetupScene, (), (const));
   MOCK_METHOD(void, TearDownScene, (), (const));
   MOCK_METHOD(void, DrawQuads, (const std::vector<g::Quad>& quads), (const));
@@ -122,6 +126,28 @@ TEST(RenderSystem, SetupAndTearDownScene) {
     .Times(1);
 
   graphics_system.Update(registry, 25);
+}
+
+TEST(RenderSystem, Init) {
+  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
+  r::GraphicsSystem graphics_system(graphics_engine);
+
+  entt::registry registry;
+  auto entity = registry.create();
+  c::Window window = c::Window{500, 500, "Window"};
+  registry.assign<c::Window>(entity, window);
+  registry.assign<c::IsUpdated>(entity, c::IsUpdated{true});
+
+  int argc = 0;
+  char ** argv = nullptr;
+
+  EXPECT_CALL(graphics_engine, Init(&argc, argv, window))
+    .Times(1);
+
+  graphics_system.Init(registry, &argc, argv);
+
+  auto is_updated = registry.get<c::IsUpdated>(entity);
+  EXPECT_EQ(is_updated.is_updated, false);
 }
 
 }  // namespace

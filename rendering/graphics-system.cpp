@@ -7,6 +7,7 @@
 #include "../component/render-camera.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
+#include "../component/is-updated.h"
 
 namespace soup {
 namespace rendering {
@@ -54,6 +55,18 @@ void GraphicsSystem::Update(const entt::registry& registry,
   graphics_engine_.DrawLines(lines);
 
   graphics_engine_.TearDownScene();
+}
+
+void GraphicsSystem::Init(const entt::registry& registry,
+                          int* argcp,
+                          char ** argv) {
+  const_cast<entt::registry&>(registry).view<
+    component::Window,
+    component::IsUpdated
+  >().each([&argcp, &argv, this] (auto& window, auto& is_updated) {
+    graphics_engine_.Init(argcp, argv, window);
+    is_updated.is_updated = false;
+  });
 }
 
 }  // namespace rendering

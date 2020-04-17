@@ -19,6 +19,8 @@
 #include "../component/control-keyboard-rotate.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
+#include "../component/window.h"
+#include "../component/is-updated.h"
 #include "../event/glut-connector.h"
 
 namespace soup {
@@ -31,13 +33,11 @@ Program::Program() :
   control_system_() {}
 
 void Program::Init(int argc, char** argv) {
-  // TODO(EggDice) move to window entity and system
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(400, 400);
-  glutCreateWindow(name_);
-
-  graphics_.Init();
+  auto window_entity = registry_.create();
+  auto window = component::Window{400, 400, "Primordial Soup"};
+  registry_.assign<component::Window>(window_entity, window);
+  registry_.assign<component::IsUpdated>(window_entity,
+                                         component::IsUpdated{true});
 
   auto world_entity = registry_.create();
   registry_.assign<component::Position>(world_entity,
@@ -93,19 +93,15 @@ void Program::Init(int argc, char** argv) {
   auto input_entity = registry_.create();
   registry_.assign<component::InputEvents>(input_entity,
                                            component::InputEvents{});
+
+  graphics_system_.Init(registry_, &argc, argv);
 }
 
 void Program::HandleDisplay() {
   graphics_system_.Update(registry_, tick_time);
 }
 
-void Program::HandleKeypress(unsigned char key, int x, int y) {
-  switch (key) {
-    case 27:  // Escape key TODO(EggDice): to constant
-      exit(0);
-      break;
-  }
-}
+void Program::HandleKeypress(unsigned char key, int x, int y) {}
 
 void Program::HandleSpecialKeypress(int key, int x, int y) {
   auto event = event::KeyboardEvent{

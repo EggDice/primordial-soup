@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "../component/window.h"
 #include "../geometry/quad.h"
 #include "../geometry/line.h"
 #include "../geometry/transform.h"
@@ -13,7 +14,9 @@ namespace rendering {
 class GraphicsEngine {
  public:
   virtual ~GraphicsEngine() {}
-  virtual void Init() const = 0;
+  virtual void Init(int * argcp,
+                    char **argv,
+                    const component::Window& window) const = 0;
   virtual void SetupScene() const = 0;
   virtual void TearDownScene() const = 0;
   virtual void DrawQuads(const std::vector<geometry::Quad>& quads) const = 0;

@@ -12,7 +12,13 @@
 namespace soup {
 namespace rendering {
 
-void OpenGlGraphicsEngine::Init() const {
+void OpenGlGraphicsEngine::Init(int * argcp,
+                                char **argv,
+                                const component::Window& window) const {
+  glutInit(argcp, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+  glutInitWindowSize(window.width, window.height);
+  glutCreateWindow(window.name.c_str());
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);

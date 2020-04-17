@@ -12,7 +12,9 @@ namespace rendering {
 
 class OpenGlGraphicsEngine : public GraphicsEngine {
  public:
-  void Init() const;
+  void Init(int * argcp,
+            char **argv,
+            const component::Window& window) const;
   void SetupScene() const;
   void TearDownScene() const;
   void DrawQuads(const std::vector<geometry::Quad>& quad) const;
