@@ -9,7 +9,8 @@
 namespace soup {
 namespace event {
 
-typedef std::chrono::time_point<std::chrono::steady_clock> Timestamp;
+using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
+using Milliseconds = std::chrono::milliseconds;
 
 class Timer {
  public:

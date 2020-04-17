@@ -6,7 +6,7 @@
 namespace soup {
 namespace component {
 
-typedef geometry::Transform RenderCamera;
+using RenderCamera = geometry::Transform;
 
 }  // namespace component
 }  // namespace soup

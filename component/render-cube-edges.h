@@ -6,7 +6,7 @@
 namespace soup {
 namespace component {
 
-typedef geometry::CubeEdges RenderCubeEdges;
+using RenderCubeEdges = geometry::CubeEdges;
 
 }  // namespace component
 }  // namespace soup

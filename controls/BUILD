@@ -1,5 +1,5 @@
-_msvc_copts = ["/std:c++17"]
-_gcc_copts = ["-std=c++17"]
+_msvc_copts = ["/std:c++2a"]
+_gcc_copts = ["-std=c++2a"]
 
 load("//tools:cpplint.bzl", "cpplint")
 

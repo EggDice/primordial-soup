@@ -12,6 +12,7 @@ cc_library(
     deps = [
         "@entt//:entt",
         "//rendering:rendering",
+        "//event:event",
         "//controls:controls",
     ],
     copts = select({

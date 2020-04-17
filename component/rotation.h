@@ -7,6 +7,7 @@ namespace component {
 struct Rotation {
   float angle_x;
   float angle_y;
+  Rotation& operator+=(const Rotation& other);
 };
 
 }  // namespace component

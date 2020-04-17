@@ -16,15 +16,17 @@
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
 #include "../component/render-camera.h"
+#include "../component/control-keyboard-rotate.h"
+#include "../event/glut-connector.h"
 
 namespace soup {
 
 Program::Program() :
-  angleX_(0),
-  angleY_(0),
   graphics_(),
   graphics_system_(graphics_),
-  render_system_() {}
+  render_system_(),
+  input_system_(),
+  control_system_() {}
 
 void Program::Init(int argc, char** argv) {
   // TODO(EggDice) move to window entity and system
@@ -58,16 +60,30 @@ void Program::Init(int argc, char** argv) {
                                         component::Rotation{10.0f, 20.0f});
   registry_.assign<component::RenderCamera>(camera_entity,
                                             component::RenderCamera{});
+  auto keyboard_rotate = component::ControlKeyBoardRotate{{
+    {event::ARROW_RIGHT_KEY, {0.0f, 5.0f}},
+    {event::ARROW_LEFT_KEY, {0.0f, -5.0f}},
+    {event::ARROW_UP_KEY, {5.0f, 0.0f}},
+    {event::ARROW_DOWN_KEY, {-5.0f, 0.0f}}
+  }};
+  registry_.assign<component::ControlKeyBoardRotate>(camera_entity,
+                                                     keyboard_rotate);
+
+
+
+  auto input_entity = registry_.create();
+  registry_.assign<component::InputEvents>(input_entity,
+                                           component::InputEvents{});
 }
 
 void Program::HandleDisplay() {
   graphics_.SetupScene();
 
   // TODO(EggDice): Move to render system and light entity
-  GLfloat ambientLight[] = {0.3f, 0.3f, 0.3f, 1.0f};
+  GLfloat ambientLight[] = {0.2f, 0.2f, 0.2f, 1.0f};
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientLight);
-  GLfloat lightColor[] = {0.7f, 0.7f, 0.7f, 1.0f};
-  GLfloat lightPos[] = {-2 * 20.0f, 20.0f, 4 * 20.0f, 1.0f};
+  GLfloat lightColor[] = {0.8f, 0.8f, 0.8f, 1.0f};
+  GLfloat lightPos[] = {-60.0f, 0.0f, 60.0f, 1.0f};
   glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor);
   glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
 
@@ -85,21 +101,11 @@ void Program::HandleKeypress(unsigned char key, int x, int y) {
 }
 
 void Program::HandleSpecialKeypress(int key, int x, int y) {
-  // TODO(EggDice): Move to input system and camera entity
-  switch (key) {
-    case GLUT_KEY_UP:
-      angleX_ = static_cast<float>((360 + static_cast<int>(angleX_) + 5) % 360);
-      break;
-    case GLUT_KEY_DOWN:
-      angleX_ = static_cast<float>((360 + static_cast<int>(angleX_) - 5) % 360);
-      break;
-    case GLUT_KEY_LEFT:
-      angleY_ = static_cast<float>((360 + static_cast<int>(angleY_) + 5) % 360);
-      break;
-    case GLUT_KEY_RIGHT:
-      angleY_ = static_cast<float>((360 + static_cast<int>(angleY_) - 5) % 360);
-      break;
-  }
+  auto event = event::KeyboardEvent{
+    event::Timer::Now(),
+    event::GlutSpecialKeyboardToKeyCode(key)
+  };
+  input_system_.Update(registry_, event);
 }
 
 void Program::HandleResize(int w, int h) {
@@ -116,6 +122,7 @@ void Program::HandleResize(int w, int h) {
 void Program::HandleMouse(int button, int state, int x, int y) {}
 
 void Program::HandleTick(int value) {
+  control_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
   render_system_.Update(registry_, tick_time);
   glutPostRedisplay();
 }

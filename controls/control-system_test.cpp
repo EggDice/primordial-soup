@@ -1,75 +1,84 @@
-/*
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
 #include <vector>
 
-#include "render-system.h"
+#include "control-system.h"
 #include <entt/entt.hpp>
-#include "../component/position.h"
-#include "../component/radius.h"
+#include "../component/input-events.h"
 #include "../component/rotation.h"
-#include "../component/color.h"
-#include "../component/render-cube-faces.h"
-#include "../component/render-cube-edges.h"
-#include "../component/render-camera.h"
+#include "../component/control-keyboard-rotate.h"
+#include "../event/timer.h"
 
-namespace r = soup::rendering;
-namespace c = soup::component;
+namespace cont = soup::controls;
+namespace comp = soup::component;
+namespace e = soup::event;
 
 namespace {
-
-using ::testing::_;
-using ::testing::SizeIs;
-
-TEST(RenderSystem, RenderFaces) {
-  r::RenderSystem render_system{};
+TEST(ControlSystem, EmptyInputs) {
+  cont::ControlSystem control_system{};
   entt::registry registry;
-  auto entity = registry.create();
-  registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
-  registry.assign<c::Radius>(entity, 1.0f);
-  registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
-  registry.assign<c::RenderCubeFaces>(entity, c::RenderCubeFaces{});
+  auto input_entity = registry.create();
+  registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_UP_KEY}
+  }});
 
-  render_system.Update(registry, 25);
+  control_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
-  auto faces = registry.get<c::RenderCubeFaces>(entity);
+  auto inputs = registry.get<comp::InputEvents>(input_entity);
 
-  EXPECT_EQ(faces.faces[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
+  EXPECT_EQ(inputs.keyboard_events.size(), 0);
 }
 
-TEST(RenderSystem, RenderEdges) {
-  r::RenderSystem render_system{};
+TEST(ControlSystem, Rotate) {
+  cont::ControlSystem control_system{};
   entt::registry registry;
+  auto input_entity = registry.create();
+  registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_UP_KEY}
+  }});
+
   auto entity = registry.create();
-  registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
-  registry.assign<c::Radius>(entity, 1.0f);
-  registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
-  registry.assign<c::RenderCubeEdges>(entity, c::RenderCubeEdges{});
+  registry.assign<comp::Rotation>(entity, comp::Rotation{5.0f, 5.0f});
+  auto keyboard_rotate = comp::ControlKeyBoardRotate{{
+    {e::ARROW_UP_KEY, {5.0f, 5.0f}}
+  }};
+  registry.assign<comp::ControlKeyBoardRotate>(entity, keyboard_rotate);
 
-  render_system.Update(registry, 25);
 
-  auto edges = registry.get<c::RenderCubeEdges>(entity);
+  control_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
-  EXPECT_EQ(edges.edges[0].color, glm::vec3(1.0f, 1.0f, 1.0f));
+  auto rotate = registry.get<comp::Rotation>(entity);
+
+  EXPECT_EQ(rotate.angle_x, 10.0f);
+  EXPECT_EQ(rotate.angle_y, 10.0f);
 }
-
-TEST(RenderSystem, RenderCamera) {
-  r::RenderSystem render_system{};
+TEST(ControlSystem, IgnoreKeys) {
+  cont::ControlSystem control_system{};
   entt::registry registry;
+  auto input_entity = registry.create();
+  registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_UP_KEY},
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_DOWN_KEY},
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_LEFT_KEY},
+    e::KeyboardEvent{e::Timer::Now(), e::ARROW_RIGHT_KEY},
+  }});
+
   auto entity = registry.create();
-  registry.assign<c::Position>(entity, glm::vec3(1.0f, 1.0f, 80.0f));
-  registry.assign<c::Rotation>(entity, c::Rotation{45.0f, 45.0f});
-  registry.assign<c::RenderCamera>(entity, c::RenderCamera{});
+  registry.assign<comp::Rotation>(entity, comp::Rotation{5.0f, 5.0f});
+  auto keyboard_rotate = comp::ControlKeyBoardRotate{{
+    {e::ARROW_DOWN_KEY, {5.0f, 5.0f}},
+    {e::ARROW_UP_KEY, {2.0f, 2.0f}},
+  }};
+  registry.assign<comp::ControlKeyBoardRotate>(entity, keyboard_rotate);
 
-  render_system.Update(registry, 25);
 
-  auto camera = registry.get<c::RenderCamera>(entity);
+  control_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
-  EXPECT_EQ(camera.translate, glm::vec3(-1.0f, -1.0f, -80.0f));
-  EXPECT_EQ(camera.rotate_x, glm::vec4(45.0f, 1.0f, 0.0f, 0.0f));
-  EXPECT_EQ(camera.rotate_y, glm::vec4(45.0f, 0.0f, 1.0f, 0.0f));
+  auto rotate = registry.get<comp::Rotation>(entity);
+
+  EXPECT_EQ(rotate.angle_x, 12.0f);
+  EXPECT_EQ(rotate.angle_y, 12.0f);
 }
-
 }  // namespace
-*/

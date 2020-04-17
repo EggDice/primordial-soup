@@ -7,6 +7,8 @@
 #include "../rendering/render-system.h"
 #include "../rendering/graphics-system.h"
 #include "../rendering/opengl-graphics-engine.h"
+#include "../controls/input-system.h"
+#include "../controls/control-system.h"
 
 namespace soup {
 class Program {
@@ -29,11 +31,11 @@ class Program {
   static const uint64_t tick_time;
 
  private:
-  float angleX_;
-  float angleY_;
   rendering::OpenGlGraphicsEngine graphics_;
   rendering::GraphicsSystem graphics_system_;
   rendering::RenderSystem render_system_;
+  controls::InputSystem input_system_;
+  controls::ControlSystem control_system_;
   entt::registry registry_;
   static const char name_[];
 };
