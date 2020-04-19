@@ -5,6 +5,7 @@
 
 #include "graphics-engine.h"
 #include "../component/render-cube-faces.h"
+#include "../event/tick-event.h"
 
 namespace soup {
 namespace rendering {
@@ -12,10 +13,16 @@ namespace rendering {
 class GraphicsSystem {
  public:
   explicit GraphicsSystem(const GraphicsEngine& graphics_engine);
-  void Update(const entt::registry& registry, uint64_t delta_time);
+  void Update(const entt::registry& registry, const event::TickEvent& event);
   void Init();
  private:
   const GraphicsEngine& graphics_engine_;
+  void RenderAmbientLights(const entt::registry& registry);
+  void RenderDiffuseLights(const entt::registry& registry);
+  void RenderCameras(const entt::registry& registry);
+  void RenderCubeFaces(const entt::registry& registry);
+  void RenderCubeEdges(const entt::registry& registry);
+  void RenderViewports(const entt::registry& registry);
 };
 
 }  // namespace rendering

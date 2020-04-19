@@ -6,6 +6,7 @@
 #include <entt/entt.hpp>
 
 #include "../geometry/cube.h"
+#include "../event/tick-event.h"
 
 namespace soup {
 namespace rendering {
@@ -18,13 +19,12 @@ using CubeCallback = std::function<
 class RenderSystem {
  public:
   RenderSystem();
-  void Update(const entt::registry& registry, uint64_t delta_time);
+  void Update(const entt::registry& registry, const event::TickEvent& event);
  private:
   template <typename T>
-  void ViewEachCube(
-      const entt::registry& registry,
-      const CubeCallback<T>& callback
-);
+  void ViewEachCube(const entt::registry& registry,
+                    const CubeCallback<T>& callback);
+  void RenderCameras(const entt::registry& registry);
 };
 
 }  // namespace rendering

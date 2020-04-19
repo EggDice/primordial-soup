@@ -13,25 +13,17 @@ namespace rendering {
 
 RenderSystem::RenderSystem() {}
 
-void RenderSystem::Update(const entt::registry& registry, uint64_t delta_time) {
-  ViewEachCube<component::RenderCubeFaces>(registry, [](const auto& cube,
-                                                        auto& render) {
+void RenderSystem::Update(const entt::registry& registry,
+                          const event::TickEvent& event) {
+  auto render_faces =  [](const auto& cube, auto& render) {
     render = cube.GetFaces();
-  });
-  ViewEachCube<component::RenderCubeEdges>(registry, [](const auto& cube,
-                                                        auto& render) {
+  };
+  auto render_edges = [](const auto& cube, auto& render) {
     render = cube.GetEdges();
-  });
-  const_cast<entt::registry&>(registry).view<
-    component::Position,
-    component::Rotation,
-    component::RenderCamera
-  >().each([](const auto& position, const auto& rotation, auto& render) {
-    render = component::RenderCamera(
-      position.position,
-      rotation.angle_x,
-      rotation.angle_y);
-  });
+  };
+  ViewEachCube<component::RenderCubeFaces>(registry, render_faces);
+  ViewEachCube<component::RenderCubeEdges>(registry, render_edges);
+  RenderCameras(registry);
 }
 
 template <typename T>
@@ -51,6 +43,19 @@ void RenderSystem::ViewEachCube(const entt::registry& registry,
       callback(
         geometry::Cube{position.position, radius.radius, color.color},
         render);
+  });
+}
+
+void RenderSystem::RenderCameras(const entt::registry& registry) {
+  const_cast<entt::registry&>(registry).view<
+    component::Position,
+    component::Rotation,
+    component::RenderCamera
+  >().each([](const auto& position, const auto& rotation, auto& render) {
+    render = component::RenderCamera(
+      position.position,
+      rotation.angle_x,
+      rotation.angle_y);
   });
 }
 

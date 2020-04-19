@@ -15,6 +15,7 @@
 namespace r = soup::rendering;
 namespace c = soup::component;
 namespace g = soup::geometry;
+namespace e = soup::event;
 
 class MockGraphicsEngine : public r::GraphicsEngine {
  public:
@@ -48,7 +49,7 @@ TEST(GraphicsSystem, DrawQuads) {
   EXPECT_CALL(graphics_engine, DrawQuads(SizeIs(6)))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, DrawLines) {
@@ -62,7 +63,7 @@ TEST(RenderSystem, DrawLines) {
   EXPECT_CALL(graphics_engine, DrawLines(SizeIs(12)))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, PlaceCamera) {
@@ -77,7 +78,7 @@ TEST(RenderSystem, PlaceCamera) {
   EXPECT_CALL(graphics_engine, PlaceCamera(camera))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, RenderAmbientLight) {
@@ -92,7 +93,7 @@ TEST(RenderSystem, RenderAmbientLight) {
   EXPECT_CALL(graphics_engine, RenderAmbientLight(ambient_light.color))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, RenderDiffuseLight) {
@@ -108,7 +109,7 @@ TEST(RenderSystem, RenderDiffuseLight) {
                                                   diffuse_light.position))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, SetupAndTearDownScene) {
@@ -123,7 +124,7 @@ TEST(RenderSystem, SetupAndTearDownScene) {
   EXPECT_CALL(graphics_engine, TearDownScene())
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 TEST(RenderSystem, Init) {
@@ -148,7 +149,7 @@ TEST(RenderSystem, RenderViewport) {
   EXPECT_CALL(graphics_engine, RenderViewport(600, 400))
     .Times(1);
 
-  graphics_system.Update(registry, 25);
+  graphics_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 }  // namespace

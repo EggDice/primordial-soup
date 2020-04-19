@@ -12,9 +12,11 @@
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
 #include "../component/render-camera.h"
+#include "../event/tick-event.h"
 
 namespace r = soup::rendering;
 namespace c = soup::component;
+namespace e = soup::event;
 
 namespace {
 
@@ -30,7 +32,7 @@ TEST(RenderSystem, RenderFaces) {
   registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
   registry.assign<c::RenderCubeFaces>(entity, c::RenderCubeFaces{});
 
-  render_system.Update(registry, 25);
+  render_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
   auto faces = registry.get<c::RenderCubeFaces>(entity);
 
@@ -46,7 +48,7 @@ TEST(RenderSystem, RenderEdges) {
   registry.assign<c::Color>(entity, glm::vec3(1.0f, 1.0f, 1.0f));
   registry.assign<c::RenderCubeEdges>(entity, c::RenderCubeEdges{});
 
-  render_system.Update(registry, 25);
+  render_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
   auto edges = registry.get<c::RenderCubeEdges>(entity);
 
@@ -61,7 +63,7 @@ TEST(RenderSystem, RenderCamera) {
   registry.assign<c::Rotation>(entity, c::Rotation{45.0f, 45.0f});
   registry.assign<c::RenderCamera>(entity, c::RenderCamera{});
 
-  render_system.Update(registry, 25);
+  render_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
   auto camera = registry.get<c::RenderCamera>(entity);
 

@@ -11,7 +11,7 @@ namespace controls {
 
 class ControlSystem {
  public:
-  void Update(const entt::registry& registry, event::TickEvent event);
+  void Update(const entt::registry& registry, const event::TickEvent& event);
  private:
   void UpdateRotate(const entt::registry& registry,
                     const component::InputEvents& input_events);

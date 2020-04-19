@@ -104,7 +104,7 @@ void Program::Init(int argc, char** argv) {
 }
 
 void Program::HandleDisplay() {
-  graphics_system_.Update(registry_, tick_time);
+  graphics_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
 }
 
 void Program::HandleKeypress(unsigned char key, int x, int y) {}
@@ -126,7 +126,7 @@ void Program::HandleMouse(int button, int state, int x, int y) {}
 
 void Program::HandleTick(int value) {
   control_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
-  render_system_.Update(registry_, tick_time);
+  render_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
   glutPostRedisplay();
 }
 

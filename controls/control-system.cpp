@@ -10,7 +10,7 @@ namespace controls {
 
 
 void ControlSystem::Update(const entt::registry& registry,
-                           event::TickEvent event) {
+                           const event::TickEvent& event) {
   const_cast<entt::registry&>(registry).view<
     component::InputEvents
   >().each([&registry, this] (auto& input_events) {
