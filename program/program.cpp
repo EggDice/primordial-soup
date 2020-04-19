@@ -2,13 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include "../component/position.h"
 #include "../component/radius.h"
 #include "../component/rotation.h"
@@ -23,7 +16,7 @@
 #include "../component/render-diffuse-light.h"
 #include "../component/window.h"
 #include "../component/render-viewport.h"
-#include "../event/glut-connector.h"
+#include "../window/glut-connector.h"
 
 namespace soup {
 
@@ -138,40 +131,40 @@ void Program::HandleTick(int value) {
   control_system_.Update(registry_, tick);
   render_system_.Update(registry_, tick);
   window_system_.Update(registry_, tick);
-  glutPostRedisplay();
+  window_utility_.PostRedisplay();
 }
 
 void Program::RegisterKeyboardFunction(void (*func)(unsigned char key,
                                                     int x, int y)) {
-  glutKeyboardFunc(func);
+  window_utility_.RegisterKeyboardFunction(func);
 }
 
 void Program::RegisterKeyboardSpecialFunction(void (*func)(int key,
                                                            int x,
                                                            int y)) {
-  glutSpecialFunc(func);
+  window_utility_.RegisterKeyboardSpecialFunction(func);
 }
 
 void Program::RegisterResizeFunction(void (*func)(int width, int height)) {
-  glutReshapeFunc(func);
+  window_utility_.RegisterResizeFunction(func);
 }
 
 void Program::RegisterMouseFunction(void (*func)(int button,
                                                  int state,
                                                  int x, int y)) {
-  glutMouseFunc(func);
+  window_utility_.RegisterMouseFunction(func);
 }
 
 void Program::RegisterDisplayFunction(void (*func)(void)) {
-  glutDisplayFunc(func);
+  window_utility_.RegisterDisplayFunction(func);
 }
 
 void Program::RegisterTickFunc(void (*func)(int value)) {
-  glutTimerFunc(Program::tick_time, func, 0);
+  window_utility_.RegisterTickFunc(func);
 }
 
 void Program::StartMainLoop() {
-  glutMainLoop();
+  window_utility_.StartMainLoop();
 }
 
 const uint64_t Program::tick_time = 25;

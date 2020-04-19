@@ -1,5 +1,5 @@
-#ifndef EVENT_GLUT_CONNECTOR_H_
-#define EVENT_GLUT_CONNECTOR_H_
+#ifndef WINDOW_GLUT_CONNECTOR_H_
+#define WINDOW_GLUT_CONNECTOR_H_
 
 #include <map>
 
@@ -10,7 +10,7 @@
 #include <GL/glut.h>
 #endif
 
-#include "keyboard-event.h"
+#include "../event/keyboard-event.h"
 
 namespace soup {
 namespace event {
@@ -33,4 +33,4 @@ KeyCode GlutSpecialKeyboardToKeyCode(int key);
 }  // namespace event
 }  // namespace soup
 
-#endif  // EVENT_GLUT_CONNECTOR_H_
+#endif  // WINDOW_GLUT_CONNECTOR_H_
