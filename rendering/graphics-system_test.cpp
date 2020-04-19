@@ -1,9 +1,7 @@
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
-
-#include <vector>
 
 #include "graphics-system.h"
+#include "mock-graphics-engine.h"
 #include <entt/entt.hpp>
 #include "../component/render-cube-faces.h"
 #include "../component/render-cube-edges.h"
@@ -17,32 +15,14 @@ namespace c = soup::component;
 namespace g = soup::geometry;
 namespace e = soup::event;
 
-class MockGraphicsEngine : public r::GraphicsEngine {
- public:
-  MOCK_METHOD(void, Init, (), (const));
-  MOCK_METHOD(void, SetupScene, (), (const));
-  MOCK_METHOD(void, TearDownScene, (), (const));
-  MOCK_METHOD(void, DrawQuads, (const std::vector<g::Quad>& quads), (const));
-  MOCK_METHOD(void, DrawLines, (const std::vector<g::Line>& lines), (const));
-  MOCK_METHOD(void, PlaceCamera, (const g::Transform& t), (const));
-  MOCK_METHOD(void, RenderAmbientLight, (const glm::vec4& color), (const));
-  MOCK_METHOD(void,
-              RenderDiffuseLight,
-              (const glm::vec4& color, const glm::vec4& position),
-              (const));
-  MOCK_METHOD(void, RenderViewport, (int width, int height), (const));
-};
-
 namespace {
 
-using ::testing::_;
 using ::testing::SizeIs;
 
 TEST(GraphicsSystem, DrawQuads) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
   registry.assign<c::RenderCubeFaces>(entity, c::RenderCubeFaces{});
 
@@ -53,10 +33,9 @@ TEST(GraphicsSystem, DrawQuads) {
 }
 
 TEST(RenderSystem, DrawLines) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
   registry.assign<c::RenderCubeEdges>(entity, c::RenderCubeEdges());
 
@@ -67,10 +46,9 @@ TEST(RenderSystem, DrawLines) {
 }
 
 TEST(RenderSystem, PlaceCamera) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
   c::RenderCamera camera = c::RenderCamera();
   registry.assign<c::RenderCamera>(entity, camera);
@@ -82,12 +60,11 @@ TEST(RenderSystem, PlaceCamera) {
 }
 
 TEST(RenderSystem, RenderAmbientLight) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
-  c::RenderAmbientLight ambient_light = c::RenderAmbientLight{};
+  auto ambient_light = c::RenderAmbientLight{};
   registry.assign<c::RenderAmbientLight>(entity, ambient_light);
 
   EXPECT_CALL(graphics_engine, RenderAmbientLight(ambient_light.color))
@@ -97,12 +74,11 @@ TEST(RenderSystem, RenderAmbientLight) {
 }
 
 TEST(RenderSystem, RenderDiffuseLight) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
-  c::RenderDiffuseLight diffuse_light = c::RenderDiffuseLight{};
+  auto diffuse_light = c::RenderDiffuseLight{};
   registry.assign<c::RenderDiffuseLight>(entity, diffuse_light);
 
   EXPECT_CALL(graphics_engine, RenderDiffuseLight(diffuse_light.color,
@@ -113,10 +89,9 @@ TEST(RenderSystem, RenderDiffuseLight) {
 }
 
 TEST(RenderSystem, SetupAndTearDownScene) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
 
   EXPECT_CALL(graphics_engine, SetupScene())
     .Times(1);
@@ -128,8 +103,8 @@ TEST(RenderSystem, SetupAndTearDownScene) {
 }
 
 TEST(RenderSystem, Init) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
 
   EXPECT_CALL(graphics_engine, Init())
     .Times(1);
@@ -138,10 +113,9 @@ TEST(RenderSystem, Init) {
 }
 
 TEST(RenderSystem, RenderViewport) {
-  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
-  r::GraphicsSystem graphics_system(graphics_engine);
-
-  entt::registry registry;
+  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_system = r::GraphicsSystem(graphics_engine);
+  auto registry = entt::registry{};
   auto entity = registry.create();
   auto viewport = c::RenderViewport{600, 400};
   registry.assign<c::RenderViewport>(entity, viewport);
