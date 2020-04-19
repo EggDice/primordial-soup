@@ -7,7 +7,7 @@
 #include "../component/render-camera.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
-#include "../component/is-updated.h"
+#include "../component/render-viewport.h"
 
 namespace soup {
 namespace rendering {
@@ -54,19 +54,17 @@ void GraphicsSystem::Update(const entt::registry& registry,
   });
   graphics_engine_.DrawLines(lines);
 
+  const_cast<entt::registry&>(registry).view<
+    component::RenderViewport
+  >().each([this] (auto& viewport) {
+    graphics_engine_.RenderViewport(viewport.width, viewport.height);
+  });
+
   graphics_engine_.TearDownScene();
 }
 
-void GraphicsSystem::Init(const entt::registry& registry,
-                          int* argcp,
-                          char ** argv) {
-  const_cast<entt::registry&>(registry).view<
-    component::Window,
-    component::IsUpdated
-  >().each([&argcp, &argv, this] (auto& window, auto& is_updated) {
-    graphics_engine_.Init(argcp, argv, window);
-    is_updated.is_updated = false;
-  });
+void GraphicsSystem::Init() {
+  graphics_engine_.Init();
 }
 
 }  // namespace rendering

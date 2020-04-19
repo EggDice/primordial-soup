@@ -4,8 +4,7 @@ namespace soup {
 namespace component {
 
 bool Window::operator==(const Window& other) const {
-  return width == other.width &&
-    height == other.height &&
+  return is_exit == other.is_exit &&
     name == other.name;
 }
 

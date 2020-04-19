@@ -12,13 +12,7 @@
 namespace soup {
 namespace rendering {
 
-void OpenGlGraphicsEngine::Init(int * argcp,
-                                char **argv,
-                                const component::Window& window) const {
-  glutInit(argcp, argv);
-  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-  glutInitWindowSize(window.width, window.height);
-  glutCreateWindow(window.name.c_str());
+void OpenGlGraphicsEngine::Init() const {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
@@ -63,7 +57,6 @@ void OpenGlGraphicsEngine::
   glEnd();
 }
 
-
 void OpenGlGraphicsEngine::
     PlaceCamera(const geometry::Transform& t) const {
   glTranslatef(t.translate[0], t.translate[1], t.translate[2]);
@@ -79,6 +72,22 @@ void OpenGlGraphicsEngine::RenderDiffuseLight(const glm::vec4& color,
                                               const glm::vec4& position) const {
   glLightfv(GL_LIGHT0, GL_DIFFUSE, glm::value_ptr(color));
   glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(position));
+}
+
+void OpenGlGraphicsEngine::RenderViewport(int width,
+                                          int height) const {
+  int viewport[4];
+  glGetIntegerv(GL_VIEWPORT, viewport);
+  auto [x, y, old_width, old_height] = viewport;
+  if (width != old_width || height != old_height) {
+    glViewport(0, 0, width, height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0,
+                   static_cast<float>(width) / static_cast<float>(height),
+                   1.0,
+                   200.0);
+  }
 }
 
 }  // namespace rendering

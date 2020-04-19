@@ -17,10 +17,11 @@
 #include "../component/render-cube-edges.h"
 #include "../component/render-camera.h"
 #include "../component/control-keyboard-rotate.h"
+#include "../component/control-resize.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
 #include "../component/window.h"
-#include "../component/is-updated.h"
+#include "../component/render-viewport.h"
 #include "../event/glut-connector.h"
 
 namespace soup {
@@ -30,14 +31,18 @@ Program::Program() :
   graphics_system_(graphics_),
   render_system_(),
   input_system_(),
-  control_system_() {}
+  control_system_(),
+  window_utility_(),
+  window_system_(window_utility_) {}
 
 void Program::Init(int argc, char** argv) {
   auto window_entity = registry_.create();
-  auto window = component::Window{400, 400, "Primordial Soup"};
+  auto window = component::Window{"Primordial Soup", false};
   registry_.assign<component::Window>(window_entity, window);
-  registry_.assign<component::IsUpdated>(window_entity,
-                                         component::IsUpdated{true});
+  auto viewport = component::RenderViewport{400, 400};
+  registry_.assign<component::RenderViewport>(window_entity, viewport);
+  auto control_resize = component::ControlResize{};
+  registry_.assign<component::ControlResize>(window_entity, control_resize);
 
   auto world_entity = registry_.create();
   registry_.assign<component::Position>(world_entity,
@@ -94,7 +99,8 @@ void Program::Init(int argc, char** argv) {
   registry_.assign<component::InputEvents>(input_entity,
                                            component::InputEvents{});
 
-  graphics_system_.Init(registry_, &argc, argv);
+  window_system_.Init(registry_, &argc, argv);
+  graphics_system_.Init();
 }
 
 void Program::HandleDisplay() {
@@ -112,14 +118,8 @@ void Program::HandleSpecialKeypress(int key, int x, int y) {
 }
 
 void Program::HandleResize(int w, int h) {
-  // TODO(EggDice): Move to window entity and graphics
-  glViewport(0, 0, w, h);
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluPerspective(45.0,
-                 static_cast<float>(w) / static_cast<float>(h),
-                 1.0,
-                 200.0);
+  auto event = event::ResizeEvent{event::Timer::Now(), w, h};
+  input_system_.Update(registry_, event);
 }
 
 void Program::HandleMouse(int button, int state, int x, int y) {}

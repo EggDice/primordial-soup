@@ -15,6 +15,8 @@ class ControlSystem {
  private:
   void UpdateRotate(const entt::registry& registry,
                     const component::InputEvents& input_events);
+  void UpdateResize(const entt::registry& registry,
+                    const component::InputEvents& input_events);
 };
 
 }  // namespace controls

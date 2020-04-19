@@ -14,9 +14,7 @@ namespace rendering {
 class GraphicsEngine {
  public:
   virtual ~GraphicsEngine() {}
-  virtual void Init(int * argcp,
-                    char **argv,
-                    const component::Window& window) const = 0;
+  virtual void Init() const = 0;
   virtual void SetupScene() const = 0;
   virtual void TearDownScene() const = 0;
   virtual void DrawQuads(const std::vector<geometry::Quad>& quads) const = 0;
@@ -25,6 +23,7 @@ class GraphicsEngine {
   virtual void RenderAmbientLight(const glm::vec4& color) const = 0;
   virtual void RenderDiffuseLight(const glm::vec4& color,
                                   const glm::vec4& position) const = 0;
+  virtual void RenderViewport(int width, int height) const = 0;
 };
 
 }  // namespace rendering

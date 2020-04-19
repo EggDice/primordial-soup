@@ -13,7 +13,7 @@ class GraphicsSystem {
  public:
   explicit GraphicsSystem(const GraphicsEngine& graphics_engine);
   void Update(const entt::registry& registry, uint64_t delta_time);
-  void Init(const entt::registry& registry, int* argcp, char ** argv);
+  void Init();
  private:
   const GraphicsEngine& graphics_engine_;
 };

@@ -9,6 +9,8 @@
 #include "../rendering/opengl-graphics-engine.h"
 #include "../controls/input-system.h"
 #include "../controls/control-system.h"
+#include "../window/glut-window-utility.h"
+#include "../window/window-system.h"
 
 namespace soup {
 class Program {
@@ -36,6 +38,8 @@ class Program {
   rendering::RenderSystem render_system_;
   controls::InputSystem input_system_;
   controls::ControlSystem control_system_;
+  window::GlutWindowUtility window_utility_;
+  window::WindowSystem window_system_;
   entt::registry registry_;
   static const char name_[];
 };

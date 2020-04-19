@@ -32,6 +32,8 @@ cc_test(
         "//event:event",
         "//controls:controls",
         "//controls:controls_test",
+        "//window:window",
+        "//window:window_test",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,

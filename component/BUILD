@@ -9,6 +9,7 @@ cc_library(
     linkopts = ["-lglut -lGL -lGLU"],
     deps = [
         "//geometry:geometry",
+        "//event:event",
     ],
 )
 
@@ -17,6 +18,7 @@ cc_library(
     hdrs = glob(["*.h"]),
     srcs = glob(["*_test.cpp"]),
     deps = [
+        "//event:event",
         "@gtest//:gtest",
     ],
 )

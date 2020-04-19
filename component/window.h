@@ -7,9 +7,8 @@ namespace soup {
 namespace component {
 
 struct Window {
-  uint64_t width;
-  uint64_t height;
   std::string name;
+  bool is_exit;
   bool operator==(const Window& other) const;
 };
 

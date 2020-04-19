@@ -6,15 +6,14 @@ load("//tools:cpplint.bzl", "cpplint")
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-    name = "program",
+    name = "window",
     hdrs = glob(["*.h"]),
     srcs = glob(["*.cpp"], ["*_test.cpp"]),
+    linkopts = ["-lglut -lGL -lGLU"],
     deps = [
+        "@glm//:glm",
         "@entt//:entt",
-        "//rendering:rendering",
-        "//event:event",
-        "//controls:controls",
-        "//window:window",
+        "//component:component",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -25,11 +24,15 @@ cc_library(
 )
 
 cc_library(
-    name = "program_test",
+    name = "window_test",
     hdrs = glob(["*.h"]),
     srcs = glob(["*_test.cpp"]),
+    visibility = ["//main:__pkg__"],
     deps = [
         "@gtest//:gtest",
+        "@glm//:glm",
+        "@entt//:entt",
+        "//component:component",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,

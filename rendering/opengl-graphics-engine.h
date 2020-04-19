@@ -12,9 +12,7 @@ namespace rendering {
 
 class OpenGlGraphicsEngine : public GraphicsEngine {
  public:
-  void Init(int * argcp,
-            char **argv,
-            const component::Window& window) const;
+  void Init() const;
   void SetupScene() const;
   void TearDownScene() const;
   void DrawQuads(const std::vector<geometry::Quad>& quad) const;
@@ -23,6 +21,7 @@ class OpenGlGraphicsEngine : public GraphicsEngine {
   void RenderAmbientLight(const glm::vec4& color) const;
   void RenderDiffuseLight(const glm::vec4& color,
                           const glm::vec4& position) const;
+  void RenderViewport(int width, int height) const;
 };
 
 }  // namespace rendering

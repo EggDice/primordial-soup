@@ -10,8 +10,7 @@
 #include "../component/render-camera.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
-#include "../component/window.h"
-#include "../component/is-updated.h"
+#include "../component/render-viewport.h"
 
 namespace r = soup::rendering;
 namespace c = soup::component;
@@ -19,9 +18,7 @@ namespace g = soup::geometry;
 
 class MockGraphicsEngine : public r::GraphicsEngine {
  public:
-  MOCK_METHOD(void, Init, (int * argcp,
-                           char **argv,
-                           const c::Window& window), (const));
+  MOCK_METHOD(void, Init, (), (const));
   MOCK_METHOD(void, SetupScene, (), (const));
   MOCK_METHOD(void, TearDownScene, (), (const));
   MOCK_METHOD(void, DrawQuads, (const std::vector<g::Quad>& quads), (const));
@@ -32,6 +29,7 @@ class MockGraphicsEngine : public r::GraphicsEngine {
               RenderDiffuseLight,
               (const glm::vec4& color, const glm::vec4& position),
               (const));
+  MOCK_METHOD(void, RenderViewport, (int width, int height), (const));
 };
 
 namespace {
@@ -132,22 +130,25 @@ TEST(RenderSystem, Init) {
   MockGraphicsEngine graphics_engine = MockGraphicsEngine();
   r::GraphicsSystem graphics_system(graphics_engine);
 
-  entt::registry registry;
-  auto entity = registry.create();
-  c::Window window = c::Window{500, 500, "Window"};
-  registry.assign<c::Window>(entity, window);
-  registry.assign<c::IsUpdated>(entity, c::IsUpdated{true});
-
-  int argc = 0;
-  char ** argv = nullptr;
-
-  EXPECT_CALL(graphics_engine, Init(&argc, argv, window))
+  EXPECT_CALL(graphics_engine, Init())
     .Times(1);
 
-  graphics_system.Init(registry, &argc, argv);
+  graphics_system.Init();
+}
 
-  auto is_updated = registry.get<c::IsUpdated>(entity);
-  EXPECT_EQ(is_updated.is_updated, false);
+TEST(RenderSystem, RenderViewport) {
+  MockGraphicsEngine graphics_engine = MockGraphicsEngine();
+  r::GraphicsSystem graphics_system(graphics_engine);
+
+  entt::registry registry;
+  auto entity = registry.create();
+  auto viewport = c::RenderViewport{600, 400};
+  registry.assign<c::RenderViewport>(entity, viewport);
+
+  EXPECT_CALL(graphics_engine, RenderViewport(600, 400))
+    .Times(1);
+
+  graphics_system.Update(registry, 25);
 }
 
 }  // namespace

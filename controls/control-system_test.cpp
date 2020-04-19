@@ -9,6 +9,8 @@
 #include "../component/input-events.h"
 #include "../component/rotation.h"
 #include "../component/control-keyboard-rotate.h"
+#include "../component/render-viewport.h"
+#include "../component/control-resize.h"
 #include "../event/timer.h"
 
 namespace cont = soup::controls;
@@ -22,6 +24,8 @@ TEST(ControlSystem, EmptyInputs) {
   auto input_entity = registry.create();
   registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{
     e::KeyboardEvent{e::Timer::Now(), e::ARROW_UP_KEY}
+  }, {
+    e::ResizeEvent{e::Timer::Now(), 600, 400}
   }});
 
   control_system.Update(registry, e::TickEvent{e::Timer::Now()});
@@ -29,6 +33,7 @@ TEST(ControlSystem, EmptyInputs) {
   auto inputs = registry.get<comp::InputEvents>(input_entity);
 
   EXPECT_EQ(inputs.keyboard_events.size(), 0);
+  EXPECT_EQ(inputs.resize_events.size(), 0);
 }
 
 TEST(ControlSystem, Rotate) {
@@ -54,6 +59,7 @@ TEST(ControlSystem, Rotate) {
   EXPECT_EQ(rotate.angle_x, 10.0f);
   EXPECT_EQ(rotate.angle_y, 10.0f);
 }
+
 TEST(ControlSystem, IgnoreKeys) {
   cont::ControlSystem control_system{};
   entt::registry registry;
@@ -73,12 +79,32 @@ TEST(ControlSystem, IgnoreKeys) {
   }};
   registry.assign<comp::ControlKeyBoardRotate>(entity, keyboard_rotate);
 
-
   control_system.Update(registry, e::TickEvent{e::Timer::Now()});
 
   auto rotate = registry.get<comp::Rotation>(entity);
 
   EXPECT_EQ(rotate.angle_x, 12.0f);
   EXPECT_EQ(rotate.angle_y, 12.0f);
+}
+
+TEST(ControlSystem, ResizeEvent) {
+  cont::ControlSystem control_system{};
+  entt::registry registry;
+  auto input_entity = registry.create();
+  registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{}, {
+    e::ResizeEvent{e::ResizeEvent{e::Timer::Now(), 600, 400}}
+  }});
+
+  auto entity = registry.create();
+  registry.assign<comp::RenderViewport>(entity,
+                                        comp::RenderViewport{100, 100});
+  registry.assign<comp::ControlResize>(entity, comp::ControlResize{});
+
+  control_system.Update(registry, e::TickEvent{e::Timer::Now()});
+
+  auto viewport = registry.get<comp::RenderViewport>(entity);
+
+  EXPECT_EQ(viewport.width, 600);
+  EXPECT_EQ(viewport.height, 400);
 }
 }  // namespace
