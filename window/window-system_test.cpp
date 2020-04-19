@@ -8,6 +8,7 @@
 
 namespace w = soup::window;
 namespace c = soup::component;
+namespace e = soup::event;
 
 class MockWindowUtility : public w::WindowUtility {
  public:
@@ -15,6 +16,7 @@ class MockWindowUtility : public w::WindowUtility {
                            char **argv,
                            const c::RenderViewport& viewport,
                            const c::Window& window), (const));
+  MOCK_METHOD(void, Exit, (), (const));
 };
 
 namespace {
@@ -37,6 +39,21 @@ TEST(WindowSystem, Init) {
     .Times(1);
 
   window_system.Init(registry, &argc, argv);
+}
+
+TEST(WindowSystem, Exit) {
+  auto window_utility = MockWindowUtility{};
+  auto window_system = w::WindowSystem(window_utility);
+
+  entt::registry registry;
+  auto entity = registry.create();
+  auto window = c::Window{"Window", true};
+  registry.assign<c::Window>(entity, window);
+
+  EXPECT_CALL(window_utility, Exit())
+    .Times(1);
+
+  window_system.Update(registry, e::TickEvent{e::Timer::Now()});
 }
 
 }  // namespace

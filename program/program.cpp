@@ -18,6 +18,7 @@
 #include "../component/render-camera.h"
 #include "../component/control-keyboard-rotate.h"
 #include "../component/control-resize.h"
+#include "../component/control-exit.h"
 #include "../component/render-ambient-light.h"
 #include "../component/render-diffuse-light.h"
 #include "../component/window.h"
@@ -43,6 +44,8 @@ void Program::Init(int argc, char** argv) {
   registry_.assign<component::RenderViewport>(window_entity, viewport);
   auto control_resize = component::ControlResize{};
   registry_.assign<component::ControlResize>(window_entity, control_resize);
+  auto control_exit = component::ControlExit{event::ESC_KEY};
+  registry_.assign<component::ControlExit>(window_entity, control_exit);
 
   auto world_entity = registry_.create();
   registry_.assign<component::Position>(world_entity,
@@ -107,7 +110,13 @@ void Program::HandleDisplay() {
   graphics_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
 }
 
-void Program::HandleKeypress(unsigned char key, int x, int y) {}
+void Program::HandleKeypress(unsigned char key, int x, int y) {
+  auto event = event::KeyboardEvent{
+    event::Timer::Now(),
+    event::GlutKeyboardToKeyCode(key)
+  };
+  input_system_.Update(registry_, event);
+}
 
 void Program::HandleSpecialKeypress(int key, int x, int y) {
   auto event = event::KeyboardEvent{
@@ -125,8 +134,10 @@ void Program::HandleResize(int w, int h) {
 void Program::HandleMouse(int button, int state, int x, int y) {}
 
 void Program::HandleTick(int value) {
-  control_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
-  render_system_.Update(registry_, event::TickEvent{event::Timer::Now()});
+  auto tick = event::TickEvent{event::Timer::Now()};
+  control_system_.Update(registry_, tick);
+  render_system_.Update(registry_, tick);
+  window_system_.Update(registry_, tick);
   glutPostRedisplay();
 }
 

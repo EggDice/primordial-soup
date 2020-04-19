@@ -12,6 +12,7 @@ class GlutWindowUtility : public WindowUtility {
             char **argv,
             const component::RenderViewport& viewport,
             const component::Window& window) const;
+  void Exit() const;
 };
 
 }  // namespace window

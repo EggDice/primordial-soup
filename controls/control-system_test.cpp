@@ -11,6 +11,8 @@
 #include "../component/control-keyboard-rotate.h"
 #include "../component/render-viewport.h"
 #include "../component/control-resize.h"
+#include "../component/window.h"
+#include "../component/control-exit.h"
 #include "../event/timer.h"
 
 namespace cont = soup::controls;
@@ -106,5 +108,25 @@ TEST(ControlSystem, ResizeEvent) {
 
   EXPECT_EQ(viewport.width, 600);
   EXPECT_EQ(viewport.height, 400);
+}
+
+TEST(ControlSystem, Exit) {
+  cont::ControlSystem control_system{};
+  entt::registry registry;
+  auto input_entity = registry.create();
+  registry.assign<comp::InputEvents>(input_entity, comp::InputEvents{{
+    e::KeyboardEvent{e::Timer::Now(), e::ESC_KEY},
+  }});
+
+  auto entity = registry.create();
+  registry.assign<comp::Window>(entity,
+                                comp::Window{"window", false});
+  registry.assign<comp::ControlExit>(entity, comp::ControlExit{e::ESC_KEY});
+
+  control_system.Update(registry, e::TickEvent{e::Timer::Now()});
+
+  auto window = registry.get<comp::Window>(entity);
+
+  EXPECT_EQ(window.is_exit, true);
 }
 }  // namespace

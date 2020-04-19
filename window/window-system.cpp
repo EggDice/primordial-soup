@@ -21,6 +21,17 @@ void WindowSystem::Init(const entt::registry& registry,
   });
 }
 
+void WindowSystem::Update(const entt::registry& registry,
+                          const event::TickEvent& event) {
+  const_cast<entt::registry&>(registry).view<
+    component::Window
+  >().each([this] (auto& window) {
+    if (window.is_exit) {
+      window_utility_.Exit();
+    }
+  });
+}
+
 }  // namespace window
 }  // namespace soup
 

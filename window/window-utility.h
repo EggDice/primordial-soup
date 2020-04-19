@@ -14,6 +14,7 @@ class WindowUtility {
                     char **argv,
                     const component::RenderViewport& viewport,
                     const component::Window& window) const = 0;
+  virtual void Exit() const = 0;
 };
 
 }  // namespace window

@@ -20,5 +20,9 @@ void GlutWindowUtility::Init(int * argcp,
   glutCreateWindow(window.name.c_str());
 }
 
+void GlutWindowUtility::Exit() const {
+  exit(EXIT_SUCCESS);
+}
+
 }  // namespace window
 }  // namespace soup
