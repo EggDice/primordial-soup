@@ -10,17 +10,17 @@
 #include "../component/render-diffuse-light.h"
 #include "../component/render-viewport.h"
 
+namespace {
 namespace r = soup::rendering;
 namespace c = soup::component;
 namespace g = soup::geometry;
 namespace e = soup::event;
 
-namespace {
-
 using ::testing::SizeIs;
+using ::testing::NiceMock;
 
 TEST(GraphicsSystem, DrawQuads) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -33,7 +33,7 @@ TEST(GraphicsSystem, DrawQuads) {
 }
 
 TEST(RenderSystem, DrawLines) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -46,7 +46,7 @@ TEST(RenderSystem, DrawLines) {
 }
 
 TEST(RenderSystem, PlaceCamera) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -60,7 +60,7 @@ TEST(RenderSystem, PlaceCamera) {
 }
 
 TEST(RenderSystem, RenderAmbientLight) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -74,7 +74,7 @@ TEST(RenderSystem, RenderAmbientLight) {
 }
 
 TEST(RenderSystem, RenderDiffuseLight) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -89,7 +89,7 @@ TEST(RenderSystem, RenderDiffuseLight) {
 }
 
 TEST(RenderSystem, SetupAndTearDownScene) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
 
@@ -103,7 +103,7 @@ TEST(RenderSystem, SetupAndTearDownScene) {
 }
 
 TEST(RenderSystem, Init) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
 
   EXPECT_CALL(graphics_engine, Init())
@@ -113,7 +113,7 @@ TEST(RenderSystem, Init) {
 }
 
 TEST(RenderSystem, RenderViewport) {
-  auto graphics_engine = r::MockGraphicsEngine();
+  auto graphics_engine = NiceMock<r::MockGraphicsEngine>();
   auto graphics_system = r::GraphicsSystem(graphics_engine);
   auto registry = entt::registry{};
   auto entity = registry.create();

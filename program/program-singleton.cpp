@@ -39,5 +39,12 @@ void ProgramSingleton::HandleTick(int value) {
   program_.RegisterTickFunc(ProgramSingleton::HandleTick);
 }
 
-Program ProgramSingleton::program_{};
+const rendering::OpenGlGraphicsEngine ProgramSingleton::graphics_engine_{};
+
+const window::GlutWindowUtility ProgramSingleton::window_utility_{};
+
+Program ProgramSingleton::program_(
+  ProgramSingleton::graphics_engine_,
+  ProgramSingleton::window_utility_
+);
 }  // namespace soup

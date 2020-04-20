@@ -14,6 +14,8 @@ class ProgramSingleton {
   static void HandleDisplay();
   static void HandleTick(int value);
  private:
+  static const rendering::OpenGlGraphicsEngine graphics_engine_;
+  static const window::GlutWindowUtility window_utility_;
   static Program program_;
 };
 }  // namespace soup

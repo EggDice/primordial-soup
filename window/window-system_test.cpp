@@ -6,14 +6,15 @@
 #include "../component/window.h"
 #include "../component/render-viewport.h"
 
+namespace {
 namespace w = soup::window;
 namespace c = soup::component;
 namespace e = soup::event;
 
-namespace {
+using ::testing::NiceMock;
 
 TEST(WindowSystem, Init) {
-  auto window_utility = w::MockWindowUtility{};
+  auto window_utility = NiceMock<w::MockWindowUtility>{};
   auto window_system = w::WindowSystem(window_utility);
   auto registry = entt::registry{};
   auto entity = registry.create();
@@ -32,7 +33,7 @@ TEST(WindowSystem, Init) {
 }
 
 TEST(WindowSystem, Exit) {
-  auto window_utility = w::MockWindowUtility{};
+  auto window_utility = NiceMock<w::MockWindowUtility>{};
   auto window_system = w::WindowSystem(window_utility);
   auto registry = entt::registry{};
   auto entity = registry.create();

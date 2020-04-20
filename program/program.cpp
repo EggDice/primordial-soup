@@ -20,13 +20,14 @@
 
 namespace soup {
 
-Program::Program() :
-  graphics_(),
+Program::Program(const rendering::GraphicsEngine& graphics,
+                 const window::WindowUtility& window) :
+  graphics_(graphics),
+  window_utility_(window),
   graphics_system_(graphics_),
   render_system_(),
   input_system_(),
   control_system_(),
-  window_utility_(),
   window_system_(window_utility_) {}
 
 void Program::Init(int argc, char** argv) {

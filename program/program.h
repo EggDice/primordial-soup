@@ -6,16 +6,19 @@
 
 #include "../rendering/render-system.h"
 #include "../rendering/graphics-system.h"
+#include "../rendering/graphics-engine.h"
 #include "../rendering/opengl-graphics-engine.h"
 #include "../controls/input-system.h"
 #include "../controls/control-system.h"
+#include "../window/window-utility.h"
 #include "../window/glut-window-utility.h"
 #include "../window/window-system.h"
 
 namespace soup {
 class Program {
  public:
-  Program();
+  Program(const rendering::GraphicsEngine& graphics,
+          const window::WindowUtility& window);
   void Init(int argc, char** argv);
   void HandleKeypress(unsigned char key, int x, int y);
   void HandleSpecialKeypress(int key, int x, int y);
@@ -33,12 +36,12 @@ class Program {
   static const uint64_t tick_time;
 
  private:
-  rendering::OpenGlGraphicsEngine graphics_;
+  const rendering::GraphicsEngine& graphics_;
+  const window::WindowUtility& window_utility_;
   rendering::GraphicsSystem graphics_system_;
   rendering::RenderSystem render_system_;
   controls::InputSystem input_system_;
   controls::ControlSystem control_system_;
-  window::GlutWindowUtility window_utility_;
   window::WindowSystem window_system_;
   entt::registry registry_;
   static const char name_[];

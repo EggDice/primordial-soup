@@ -27,8 +27,13 @@ cc_library(
 cc_library(
     name = "program_test",
     hdrs = glob(["*.h"]),
-    srcs = glob(["*_test.cpp"]),
+    srcs = glob(["*.cpp", "*_test.cpp"]),
     deps = [
+        "@entt//:entt",
+        "//rendering:rendering",
+        "//event:event",
+        "//controls:controls",
+        "//window:window",
         "@gtest//:gtest",
     ],
     copts = select({
