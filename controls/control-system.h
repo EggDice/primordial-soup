@@ -11,13 +11,13 @@ namespace controls {
 
 class ControlSystem {
  public:
-  void Update(const entt::registry& registry, const event::TickEvent& event);
+  void Update(entt::registry& registry, const event::TickEvent& event); // NOLINT
  private:
-  void UpdateRotate(const entt::registry& registry,
+  void UpdateRotate(entt::registry& registry, // NOLINT
                     const component::InputEvents& input_events);
-  void UpdateResize(const entt::registry& registry,
+  void UpdateResize(entt::registry& registry, // NOLINT
                     const component::InputEvents& input_events);
-  void UpdateExit(const entt::registry& registry,
+  void UpdateExit(entt::registry& registry, // NOLINT
                   const component::InputEvents& input_events);
 };
 

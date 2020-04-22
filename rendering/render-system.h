@@ -18,13 +18,12 @@ using CubeCallback = std::function<
 
 class RenderSystem {
  public:
-  RenderSystem();
-  void Update(const entt::registry& registry, const event::TickEvent& event);
+  void Update(entt::registry& registry, const event::TickEvent& event); // NOLINT
  private:
   template <typename T>
-  void ViewEachCube(const entt::registry& registry,
+  void ViewEachCube(entt::registry& registry, // NOLINT
                     const CubeCallback<T>& callback);
-  void RenderCameras(const entt::registry& registry);
+  void RenderCameras(entt::registry& registry); // NOLINT
 };
 
 }  // namespace rendering

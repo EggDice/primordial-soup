@@ -11,9 +11,7 @@
 namespace soup {
 namespace rendering {
 
-RenderSystem::RenderSystem() {}
-
-void RenderSystem::Update(const entt::registry& registry,
+void RenderSystem::Update(entt::registry& registry,
                           const event::TickEvent& event) {
   auto render_faces =  [](const auto& cube, auto& render) {
     render = cube.GetFaces();
@@ -27,10 +25,10 @@ void RenderSystem::Update(const entt::registry& registry,
 }
 
 template <typename T>
-void RenderSystem::ViewEachCube(const entt::registry& registry,
+void RenderSystem::ViewEachCube(entt::registry& registry,
                                 const CubeCallback<T>& callback
 ) {
-  const_cast<entt::registry&>(registry).view<
+  registry.view<
     component::Position,
     component::Radius,
     component::Color,
@@ -46,8 +44,8 @@ void RenderSystem::ViewEachCube(const entt::registry& registry,
   });
 }
 
-void RenderSystem::RenderCameras(const entt::registry& registry) {
-  const_cast<entt::registry&>(registry).view<
+void RenderSystem::RenderCameras(entt::registry& registry) {
+  registry.view<
     component::Position,
     component::Rotation,
     component::RenderCamera

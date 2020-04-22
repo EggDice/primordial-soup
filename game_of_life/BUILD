@@ -1,14 +1,19 @@
 _msvc_copts = ["/std:c++17"]
 _gcc_copts = ["-std=c++17"]
 
-cc_binary(
-    name = "soup",
-    srcs = ["main.cpp"],
+load("//tools:cpplint.bzl", "cpplint")
+
+package(default_visibility = ["//visibility:public"])
+
+cc_library(
+    name = "game_of_life",
+    hdrs = glob(["*.h"]),
+    srcs = glob(["*.cpp"], ["*_test.cpp"]),
     linkopts = ["-lglut -lGL -lGLU"],
     deps = [
         "@glm//:glm",
-        "//program:program",
-        "//rendering:rendering",
+        "@entt//:entt",
+        "//component:component",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -18,24 +23,16 @@ cc_binary(
     }),
 )
 
-cc_test(
-    name = "test",
-    srcs = ["test-main.cpp"],
+cc_library(
+    name = "game_of_life_test",
+    hdrs = glob(["*.h"]),
+    srcs = glob(["*_test.cpp"]),
+    visibility = ["//main:__pkg__"],
     deps = [
-        "@glm//:glm",
         "@gtest//:gtest",
-        "//rendering:rendering",
-        "//rendering:rendering_test",
-        "//geometry:geometry_test",
-        "//component:component_test",
-        "//program:program_test",
-        "//event:event",
-        "//controls:controls",
-        "//controls:controls_test",
-        "//window:window",
-        "//window:window_test",
-        "//game_of_life:game_of_life",
-        "//game_of_life:game_of_life_test",
+        "@glm//:glm",
+        "@entt//:entt",
+        "//component:component",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -44,3 +41,9 @@ cc_test(
       "//conditions:default": _gcc_copts,
     }),
 )
+
+exports_files([
+    "CPPLINT.cfg",
+])
+
+cpplint()

@@ -11,7 +11,7 @@ namespace controls {
 class InputSystem {
  public:
   template <typename T>
-  void Update(const entt::registry& registry, T event);
+  void Update(entt::registry& registry, T event); // NOLINT
 };
 
 }  // namespace controls

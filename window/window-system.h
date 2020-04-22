@@ -12,8 +12,8 @@ namespace window {
 class WindowSystem {
  public:
   explicit WindowSystem(const WindowUtility& window_utility);
-  void Init(const entt::registry& registry, int* argcp, char ** argv);
-  void Update(const entt::registry& registry, const event::TickEvent& event);
+  void Init(entt::registry& registry, int* argcp, char ** argv); // NOLINT
+  void Update(entt::registry& registry, const event::TickEvent& event); // NOLINT
  private:
   const WindowUtility& window_utility_;
 };

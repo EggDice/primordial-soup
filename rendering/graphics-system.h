@@ -13,16 +13,16 @@ namespace rendering {
 class GraphicsSystem {
  public:
   explicit GraphicsSystem(const GraphicsEngine& graphics_engine);
-  void Update(const entt::registry& registry, const event::TickEvent& event);
+  void Update(entt::registry& registry, const event::TickEvent& event); // NOLINT
   void Init();
  private:
   const GraphicsEngine& graphics_engine_;
-  void RenderAmbientLights(const entt::registry& registry);
-  void RenderDiffuseLights(const entt::registry& registry);
-  void RenderCameras(const entt::registry& registry);
-  void RenderCubeFaces(const entt::registry& registry);
-  void RenderCubeEdges(const entt::registry& registry);
-  void RenderViewports(const entt::registry& registry);
+  void RenderAmbientLights(entt::registry& registry); // NOLINT
+  void RenderDiffuseLights(entt::registry& registry); // NOLINT
+  void RenderCameras(entt::registry& registry); // NOLINT
+  void RenderCubeFaces(entt::registry& registry); // NOLINT
+  void RenderCubeEdges(entt::registry& registry); // NOLINT
+  void RenderViewports(entt::registry& registry); // NOLINT
 };
 
 }  // namespace rendering

@@ -14,18 +14,18 @@
 #include "../component/render-camera.h"
 #include "../event/tick-event.h"
 
+namespace {
+
 namespace r = soup::rendering;
 namespace c = soup::component;
 namespace e = soup::event;
-
-namespace {
 
 using ::testing::_;
 using ::testing::SizeIs;
 
 TEST(RenderSystem, RenderFaces) {
-  r::RenderSystem render_system{};
-  entt::registry registry;
+  auto render_system = r::RenderSystem{};
+  auto registry = entt::registry{};
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
   registry.assign<c::Radius>(entity, 1.0f);
@@ -40,8 +40,8 @@ TEST(RenderSystem, RenderFaces) {
 }
 
 TEST(RenderSystem, RenderEdges) {
-  r::RenderSystem render_system{};
-  entt::registry registry;
+  auto render_system = r::RenderSystem{};
+  auto registry = entt::registry{};
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(0.0f, 0.0f, 0.0f));
   registry.assign<c::Radius>(entity, 1.0f);
@@ -56,8 +56,8 @@ TEST(RenderSystem, RenderEdges) {
 }
 
 TEST(RenderSystem, RenderCamera) {
-  r::RenderSystem render_system{};
-  entt::registry registry;
+  auto render_system = r::RenderSystem{};
+  auto registry = entt::registry{};
   auto entity = registry.create();
   registry.assign<c::Position>(entity, glm::vec3(1.0f, 1.0f, 80.0f));
   registry.assign<c::Rotation>(entity, c::Rotation{45.0f, 45.0f});

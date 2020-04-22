@@ -11,9 +11,9 @@ namespace soup {
 namespace controls {
 
 
-void ControlSystem::Update(const entt::registry& registry,
+void ControlSystem::Update(entt::registry& registry,
                            const event::TickEvent& event) {
-  const_cast<entt::registry&>(registry).view<
+  registry.view<
     component::InputEvents
   >().each([&registry, this] (auto& input_events) {
     UpdateRotate(registry, input_events);
@@ -24,9 +24,9 @@ void ControlSystem::Update(const entt::registry& registry,
   });
 }
 
-void ControlSystem::UpdateRotate(const entt::registry& registry,
+void ControlSystem::UpdateRotate(entt::registry& registry,
                                  const component::InputEvents& input_events) {
-  const_cast<entt::registry&>(registry).view<
+  registry.view<
     component::ControlKeyBoardRotate,
     component::Rotation
   >().each([&input_events] (auto& control, auto& rotation) {
@@ -39,9 +39,9 @@ void ControlSystem::UpdateRotate(const entt::registry& registry,
   });
 }
 
-void ControlSystem::UpdateResize(const entt::registry& registry,
+void ControlSystem::UpdateResize(entt::registry& registry,
                                  const component::InputEvents& input_events) {
-  const_cast<entt::registry&>(registry).view<
+  registry.view<
     component::ControlResize,
     component::RenderViewport
   >().each([&input_events] (auto& control, auto& viewport) {
@@ -52,9 +52,9 @@ void ControlSystem::UpdateResize(const entt::registry& registry,
   });
 }
 
-void ControlSystem::UpdateExit(const entt::registry& registry,
+void ControlSystem::UpdateExit(entt::registry& registry,
                                const component::InputEvents& input_events) {
-  const_cast<entt::registry&>(registry).view<
+  registry.view<
     component::ControlExit,
     component::Window
   >().each([&input_events] (auto& control, auto& window) {
