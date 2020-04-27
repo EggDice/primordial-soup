@@ -15,6 +15,7 @@ cc_library(
         "//event:event",
         "//controls:controls",
         "//window:window",
+        "//game_of_life:game_of_life",
     ],
     copts = select({
       "@bazel_tools//src/conditions:windows": _msvc_copts,
@@ -34,6 +35,7 @@ cc_library(
         "//event:event",
         "//controls:controls",
         "//window:window",
+        "//game_of_life:game_of_life",
         "@gtest//:gtest",
     ],
     copts = select({

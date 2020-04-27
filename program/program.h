@@ -13,6 +13,7 @@
 #include "../window/window-utility.h"
 #include "../window/glut-window-utility.h"
 #include "../window/window-system.h"
+#include "../game_of_life/live-or-dead-system.h"
 
 namespace soup {
 class Program {
@@ -43,6 +44,7 @@ class Program {
   controls::InputSystem input_system_;
   controls::ControlSystem control_system_;
   window::WindowSystem window_system_;
+  game_of_life::LiveOrDeadSystem live_or_dead_system_;
   entt::registry registry_;
   static const char name_[];
 };

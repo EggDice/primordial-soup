@@ -35,10 +35,12 @@ void OpenGlGraphicsEngine::
     DrawQuads(const std::vector<geometry::Quad>& quads) const {
   glBegin(GL_QUADS);
   for (auto& quad : quads) {
-    glColor3fv(glm::value_ptr(quad.color));
-    glNormal3fv(glm::value_ptr(quad.normal));
-    for (uint8_t i = 0; i < 4; ++i) {
-      glVertex3fv(glm::value_ptr(quad.vertices[i]));
+    if (quad.color.x != 0.0f || quad.color.y != 0.0f || quad.color.z != 0.0f) {
+      glColor3fv(glm::value_ptr(quad.color));
+      glNormal3fv(glm::value_ptr(quad.normal));
+      for (uint8_t i = 0; i < 4; ++i) {
+        glVertex3fv(glm::value_ptr(quad.vertices[i]));
+      }
     }
   }
   glEnd();

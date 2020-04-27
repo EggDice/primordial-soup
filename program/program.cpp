@@ -16,6 +16,7 @@
 #include "../component/render-diffuse-light.h"
 #include "../component/window.h"
 #include "../component/render-viewport.h"
+#include "../component/game-of-life-cell.h"
 #include "../window/glut-connector.h"
 
 namespace soup {
@@ -28,7 +29,8 @@ Program::Program(const rendering::GraphicsEngine& graphics,
   render_system_(),
   input_system_(),
   control_system_(),
-  window_system_(window_utility_) {}
+  window_system_(window_utility_),
+  live_or_dead_system_() {}
 
 void Program::Init(int argc, char** argv) {
   auto window_entity = registry_.create();
@@ -44,19 +46,10 @@ void Program::Init(int argc, char** argv) {
   auto world_entity = registry_.create();
   registry_.assign<component::Position>(world_entity,
                                         glm::vec3(0.0f, 0.0f, 0.0f));
-  registry_.assign<component::Radius>(world_entity, 20.0f);
+  registry_.assign<component::Radius>(world_entity, 21.0f);
   registry_.assign<component::Color>(world_entity, glm::vec3(0.0f, 1.0f, 0.0f));
   registry_.assign<component::RenderCubeEdges>(world_entity,
                                                component::RenderCubeEdges{});
-
-  auto element_entity = registry_.create();
-  registry_.assign<component::Position>(element_entity,
-                                        glm::vec3(0.0f, 0.0f, 0.0f));
-  registry_.assign<component::Radius>(element_entity, 0.5f);
-  registry_.assign<component::Color>(element_entity,
-                                     glm::vec3(1.0f, 0.0f, 1.0f));
-  registry_.assign<component::RenderCubeFaces>(element_entity,
-                                               component::RenderCubeFaces{});
 
   auto camera_entity = registry_.create();
   registry_.assign<component::Position>(camera_entity,
@@ -96,6 +89,47 @@ void Program::Init(int argc, char** argv) {
   registry_.assign<component::InputEvents>(input_entity,
                                            component::InputEvents{});
 
+  int64_t size = 10;
+  for (int64_t z = -size; z <= size; ++z) {
+    for (int64_t y = -size; y <= size; ++y) {
+      for (int64_t x = -size; x <= size; ++x) {
+        auto element_entity = registry_.create();
+        registry_.assign<component::Position>(element_entity,
+                                              glm::vec3(x * 2, y * 2 , z * 2));
+        registry_.assign<component::Radius>(element_entity, 1.0f);
+        registry_.assign<component::RenderCubeFaces>(
+          element_entity,
+          component::RenderCubeFaces{});
+        int64_t a = -1;
+        int64_t b = 1;
+        if (
+            (x == a && y == a && z == a) ||
+            (x == b && y == a && z == a) ||
+            (x == a && y == b && z == a) ||
+            (x == b && y == b && z == a) ||
+            (x == a && y == a && z == b) ||
+            (x == b && y == a && z == b) ||
+            (x == a && y == b && z == b) ||
+            (x == b && y == b && z == b)
+            ) {
+          registry_.assign<component::GameOfLifeCell>(
+            element_entity,
+            component::GameOfLifeCell{true});
+          registry_.assign<component::Color>(
+            element_entity,
+            glm::vec3(1.0f, 1.0f, 1.0f));
+        } else {
+          registry_.assign<component::GameOfLifeCell>(
+            element_entity,
+            component::GameOfLifeCell{false});
+          registry_.assign<component::Color>(
+            element_entity,
+            glm::vec3(0.0f, 0.0f, 0.0f));
+        }
+      }
+    }
+  }
+
   window_system_.Init(registry_, &argc, argv);
   graphics_system_.Init();
 }
@@ -131,6 +165,7 @@ void Program::HandleTick(int value) {
   auto tick = event::TickEvent{event::Timer::Now()};
   control_system_.Update(registry_, tick);
   render_system_.Update(registry_, tick);
+  live_or_dead_system_.Update(registry_, tick);
   window_system_.Update(registry_, tick);
   window_utility_.PostRedisplay();
 }
